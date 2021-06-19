@@ -7,7 +7,7 @@ use JiraRestApi\Project\ProjectService;
 
 trait InteractsWithJira
 {
-    public function getProject(string $key)
+    public function getJiraProject(string $key)
     {
         return (new ProjectService)->get($key);
     }

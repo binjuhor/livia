@@ -15,4 +15,9 @@ trait InteractsWithProjectModel
             'jira_code' => $jiraCode
         ]);
     }
+
+    public function getProject($projectId)
+    {
+        return Project::findOrFail($projectId);
+    }
 }

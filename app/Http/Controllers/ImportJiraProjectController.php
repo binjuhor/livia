@@ -20,7 +20,7 @@ class ImportJiraProjectController extends Controller
         ])->validateWithBag('addJiraProject');
 
         tap(
-            $this->getProject($request->post('jira_code')),
+            $this->getJiraProject($request->post('jira_code')),
             function(Project $project){
                 $this->createProject(
                     $project->name,

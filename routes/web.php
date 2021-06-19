@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ViewProjectController;
 use App\Http\Controllers\ImportJiraProjectController;
 use App\Http\Controllers\ProjectController;
 use Illuminate\Foundation\Application;
@@ -40,6 +41,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
         Route::post('/import/jira', ImportJiraProjectController::class)
              ->name('projects.import.jira');
+
+        Route::get('/{projectId}', ViewProjectController::class)
+            ->name('projects.view');
     });
 });
 

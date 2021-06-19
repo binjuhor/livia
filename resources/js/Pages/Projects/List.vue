@@ -20,11 +20,11 @@
 
                                 <div class="flex items-center">
                                     <!-- View Project Action -->
-                                    <button class="cursor-pointer ml-6 text-sm text-red-500 focus:outline-none"
-                                            @click="viewProject(project)"
+                                    <inertia-link :href="viewProject(project)"
+                                                  class="cursor-pointer ml-6 text-sm text-red-500 focus:outline-none"
                                     >
                                         View
-                                    </button>
+                                    </inertia-link>
                                 </div>
                             </div>
                         </div>
@@ -61,7 +61,7 @@
 
         methods: {
             viewProject(project) {
-                alert(`View project ${project.name}`)
+                return route('projects.view', project)
             }
         },
     }
