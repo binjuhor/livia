@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ImportJiraProjectController;
 use App\Http\Controllers\ProjectController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -30,5 +31,15 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
-    Route::get('/projects', ProjectController::class)->name('projects');
+    /**
+     * Route /projects/*
+     */
+    Route::prefix('projects')->group(function () {
+        Route::get('/', ProjectController::class)
+             ->name('projects');
+
+        Route::post('/import/jira', ImportJiraProjectController::class)
+             ->name('projects.import.jira');
+    });
 });
+
