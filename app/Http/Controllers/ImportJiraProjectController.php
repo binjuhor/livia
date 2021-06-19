@@ -2,22 +2,33 @@
 
 namespace App\Http\Controllers;
 
+use App\Projects\InteractsWithProjectModel;
+use App\Services\InteractsWithJira;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Atlassian\JiraRest\Requests\Project\ProjectRequest;
+use JiraRestApi\Project\Project;
 
 class ImportJiraProjectController extends Controller
 {
+    use InteractsWithJira;
+    use InteractsWithProjectModel;
+
     public function __invoke(Request $request)
     {
         Validator::make($request->all(), [
             'jira_code' => ['required', 'string', 'max:255']
         ])->validateWithBag('addJiraProject');
 
-        $projectRequest = new ProjectRequest;
+        tap(
+            $this->getProject($request->post('jira_code')),
+            function(Project $project){
+                $this->createProject(
+                    $project->name,
+                    $project->key
+                );
+            }
+        );
 
-        dd($projectRequest->all());
-
-        return [];
+        return back(303);
     }
 }
