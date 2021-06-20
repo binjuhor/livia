@@ -8,7 +8,7 @@
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                Project detail content here.
+                <issue-list :issues="project.issues" />
             </div>
         </div>
     </app-layout>
@@ -16,6 +16,7 @@
 
 <script>
     import AppLayout from '@/Layouts/AppLayout'
+    import IssueList from '@/Pages/Projects/IssueList'
 
     export default {
         props: [
@@ -23,7 +24,8 @@
         ],
 
         components: {
-            AppLayout
+            AppLayout,
+            IssueList
         },
     }
 </script>
