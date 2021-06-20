@@ -8,16 +8,16 @@ use App\Models\Project;
 
 trait InteractsWithProjectModel
 {
-    public function createProject(string $name, string $jiraCode)
+    public function createProject(string $name, string $key)
     {
         return Project::factory()->create([
-            'name'      => $name,
-            'jira_code' => $jiraCode
+            'name'     => $name,
+            'jira_key' => $key
         ]);
     }
 
     public function getProject($projectId)
     {
-        return Project::findOrFail($projectId);
+        return Project::query()->findOrFail($projectId);
     }
 }

@@ -2,19 +2,20 @@
 
 namespace Database\Factories;
 
+use App\Models\Issue;
 use App\Models\Project;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
-class ProjectFactory extends Factory
+class IssueFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Project::class;
+    protected $model = Issue::class;
 
     /**
      * Define the model's default state.
@@ -26,8 +27,13 @@ class ProjectFactory extends Factory
         $faker = \Faker\Factory::create();
 
         return [
-            'name'     => $faker->name(),
-            'jira_key' => Str::upper($faker->word)
+            'summary'    => $faker->name(),
+            'jira_key'   => sprintf(
+                '%s-%d',
+                Str::upper($faker->word),
+                $faker->numberBetween(1, 1000)
+            ),
+            'project_id' => Project::factory()
         ];
     }
 }

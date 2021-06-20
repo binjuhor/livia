@@ -16,7 +16,7 @@ class AddProjectsTable extends Migration
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('jira_code')->unique();
+            $table->string('jira_key')->unique();
             $table->timestamps();
         });
     }

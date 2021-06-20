@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Project extends Model
+class Issue extends Model
 {
     use HasFactory;
 
@@ -16,12 +16,13 @@ class Project extends Model
      * @var array
      */
     protected $fillable = [
-        'name',
-        'jira_key'
+        'summary',
+        'jira_key',
+        'project_id'
     ];
 
-    public function issues(): HasMany
+    public function project(): BelongsTo
     {
-        return $this->hasMany(Issue::class);
+        return $this->belongsTo(Project::class);
     }
 }

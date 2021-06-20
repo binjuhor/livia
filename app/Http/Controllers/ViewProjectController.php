@@ -13,7 +13,7 @@ class ViewProjectController extends Controller
 
     public function __invoke(int $projectId): Response
     {
-        return Inertia::render('Projects/View', [
+        return Inertia::render('Projects/ProjectView', [
             'project' => $this->getProject($projectId)
         ]);
     }

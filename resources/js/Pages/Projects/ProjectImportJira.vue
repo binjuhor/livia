@@ -17,15 +17,15 @@
                 <template #form>
                     <div class="col-span-6">
                         <div class="max-w-xl text-sm text-gray-600">
-                            Please provide the code of the Jira project that you want to add. For example: CB.
+                            Please provide the key of the Jira project that you want to add. For example: CB.
                         </div>
                     </div>
 
                     <!-- Jira Project Code -->
                     <div class="col-span-6 sm:col-span-4">
-                        <jet-label for="jira_code" value="Jira project code" />
-                        <jet-input id="jira_code" type="text" class="mt-1 block w-full" v-model="addJiraProjectForm.jira_code" />
-                        <jet-input-error :message="addJiraProjectForm.errors.jira_code" class="mt-2" />
+                        <jet-label for="jira_key" value="Jira project key" />
+                        <jet-input id="jira_key" type="text" class="mt-1 block w-full" v-model="addJiraProjectForm.jira_key" />
+                        <jet-input-error :message="addJiraProjectForm.errors.jira_key" class="mt-2" />
                     </div>
                 </template>
 
@@ -66,7 +66,7 @@
         data() {
             return {
                 addJiraProjectForm: this.$inertia.form({
-                    jira_code: '',
+                    jira_key: '',
                 }),
             }
         },

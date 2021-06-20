@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ImportJiraIssuesForProject;
 use App\Http\Controllers\ViewProjectController;
 use App\Http\Controllers\ImportJiraProjectController;
 use App\Http\Controllers\ProjectController;
@@ -43,7 +44,15 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
              ->name('projects.import.jira');
 
         Route::get('/{projectId}', ViewProjectController::class)
-            ->name('projects.view');
+             ->name('projects.view');
+    });
+
+    /**
+     * Route /issues/*
+     */
+    Route::prefix('issues')->group(function () {
+        Route::post('/import/jira', ImportJiraIssuesForProject::class)
+             ->name('issues.import.jira');
     });
 });
 
