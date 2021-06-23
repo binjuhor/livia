@@ -3,6 +3,8 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Issues\IssueType;
+use App\Issues\IssueStatus;
 
 class AddIssuesTable extends Migration
 {
@@ -21,6 +23,11 @@ class AddIssuesTable extends Migration
                   ->constrained('projects')
                   ->onUpdate('cascade')
                   ->onDelete('cascade');
+            $table->unsignedFloat('story_point')->default(0);
+            $table->enum('type', IssueType::getValues())
+                  ->default(IssueType::Story);
+            $table->enum('status', IssueStatus::getValues())
+                  ->default(IssueStatus::ToDo);
             $table->timestamps();
         });
     }

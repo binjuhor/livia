@@ -2,12 +2,11 @@
 
 namespace App\Models;
 
-use App\Projects\IssueType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Issue extends Model
+class Invoice extends Model
 {
     use HasFactory;
 
@@ -17,12 +16,10 @@ class Issue extends Model
      * @var array
      */
     protected $fillable = [
-        'summary',
-        'jira_key',
-        'project_id',
-        'story_point',
-        'type',
-        'status'
+        'reference',
+        'total',
+        'status',
+        'xero_id'
     ];
 
     public function project(): BelongsTo

@@ -18,6 +18,9 @@
                             <div class="flex items-center justify-between" v-for="issue in issues" :key="issue.id">
                                 <div class="text-gray-600">{{ issue.jira_key }}</div>
                                 <div class="text-gray-600">{{ issue.summary }}</div>
+                                <div class="text-gray-600">{{ issue.story_point }}</div>
+                                <div class="text-gray-600">{{ typeLabel(issue.type) }}</div>
+                                <div class="text-gray-600">{{ statusLabel(issue.status) }}</div>
                             </div>
                         </div>
                         <div v-else>
@@ -33,23 +36,29 @@
 </template>
 
 <script>
-    import JetActionSection from '@/Jetstream/ActionSection'
+import JetActionSection from '@/Jetstream/ActionSection'
 
-    export default {
-        components: {
-            JetActionSection
+export default {
+    components: {
+        JetActionSection,
+    },
+
+    props: [
+        'issues',
+    ],
+
+    data() {
+        return {}
+    },
+
+    methods: {
+        typeLabel(type) {
+            return ['Story', 'Task', 'Bug'][type]
         },
 
-        props: [
-            'issues'
-        ],
-
-        data() {
-            return {
-            }
+        statusLabel(status) {
+            return ['To Do', 'In Progress', 'Done'][status]
         },
-
-        methods: {
-        },
-    }
+    },
+}
 </script>
