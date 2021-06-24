@@ -16,17 +16,46 @@ trait InteractsWithJira
         return (new ProjectService)->get($key);
     }
 
-    /** @noinspection PhpUnhandledExceptionInspection */
-    private function getJiraIssuesByProject(string $projectKey): IssueSearchResult
+    private function searchJiraIssuesThisWeekByProject(string $projectKey): IssueSearchResult
     {
-        return (new IssueService)->search(
+        return $this->searchJiraIssues(
+            sprintf(
+                'project = "%s" AND updatedDate >= startOfWeek()',
+                $projectKey
+            )
+        );
+    }
+
+    private function searchJiraIssuesDoneThisWeekByProject(string $projectKey): IssueSearchResult
+    {
+        return $this->searchJiraIssues(
+            sprintf(
+                'project = "%s" AND updatedDate >= startOfWeek() AND status = DONE',
+                $projectKey
+            )
+        );
+    }
+
+    private function searchJiraIssuesThisMonthByProject(string $projectKey): IssueSearchResult
+    {
+        return $this->searchJiraIssues(
             sprintf(
             'project = "%s" AND updatedDate >= startOfMonth()',
             $projectKey
-            ),
+            )
+        );
+    }
+
+    /** @noinspection PhpUnhandledExceptionInspection */
+    private function searchJiraIssues(string $jql): IssueSearchResult
+    {
+        return (new IssueService)->search(
+            $jql,
             0,
             9999,
-            ['summary', 'key']
+            [
+                '*all'
+            ]
         );
     }
 }

@@ -4,7 +4,9 @@
 namespace App\Projects;
 
 
+use App\Issues\IssueStatus;
 use App\Models\Project;
+use Illuminate\Database\Eloquent\Collection;
 
 trait InteractsWithProjectModel
 {
@@ -16,8 +18,47 @@ trait InteractsWithProjectModel
         ]);
     }
 
-    public function getProject($projectId)
+    public function resolveProject($input)
     {
-        return Project::query()->findOrFail($projectId);
+        if (is_numeric($input)) {
+            return $this->getProject($input);
+        }
+
+        if (is_string($input)) {
+            return $this->getProjectByKey($input);
+        }
+
+        abort(400, __('Bad input to find project.'));
+    }
+
+    /**
+     * @param int $projectId
+     * @return Project|null
+     * @noinspection PhpIncompatibleReturnTypeInspection
+     */
+    public function getProject(int $projectId): ?Project
+    {
+        return Project::query()
+                      ->find($projectId);
+    }
+
+    public function getProjectByKey(string $key)
+    {
+        return Project::query()
+                      ->where('jira_key', $key)
+                      ->first();
+    }
+
+    public function findOrCreate(string $name, string $key)
+    {
+        return Project::where('jira_key', $key)->first()
+            ?: $this->createProject($name, $key);
+    }
+
+    private function getProjectDoneIssues(Project $project): Collection
+    {
+        return $project->issues()
+                       ->where('status', IssueStatus::Done)
+                       ->get();
     }
 }

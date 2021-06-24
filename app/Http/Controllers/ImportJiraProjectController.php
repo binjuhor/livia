@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Issues\IssueStatus;
 use App\Projects\InteractsWithProjectModel;
 use App\Services\InteractsWithJira;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use JiraRestApi\Issue\IssueSearchResult;
+use Illuminate\Support\Str;
 use JiraRestApi\Issue\IssueV3;
 use App\Models\Project;
+use App\Issues\IssueType;
 
 class ImportJiraProjectController extends Controller
 {
@@ -23,30 +25,38 @@ class ImportJiraProjectController extends Controller
             'jira_key' => [
                 'required',
                 'string',
-                'max:255',
-                'unique:projects'
+                'max:255'
             ]
         ])->validateWithBag('addJiraProject');
 
         try {
-            $jiraKey     = $request->post('jira_key');
-            $jiraProject = $this->getJiraProject($jiraKey);
+            $jiraKey               = $request->post('jira_key');
+            $jiraProject           = $this->getJiraProject($jiraKey);
+            $issuesMappingCallback = function (IssueV3 $jiraIssue) {
+                return [
+                    'jira_key'    => $jiraIssue->key,
+                    'summary'     => $jiraIssue->fields->summary,
+                    'story_point' => $jiraIssue->fields->customFields[ 'customfield_10016' ] ?? 0,
+                    'type'        => IssueType::fromKey(
+                        $jiraIssue->fields->issuetype->name
+                    ),
+                    'status'      => IssueStatus::fromKey(
+                        Str::remove(' ', $jiraIssue->fields->status->name)
+                    )
+                ];
+            };
 
             tap(
-                $this->createProject(
+                $this->findOrCreate(
                     $jiraProject->name,
                     $jiraProject->key
                 ),
-                function (Project $project) use ($jiraKey) {
-
+                function (Project $project) use ($issuesMappingCallback, $jiraKey) {
                     $issuesData = collect(
-                        $this->getJiraIssuesByProject($jiraKey)->getIssues()
-                    )->map(function (IssueV3 $jiraIssue) {
-                        return [
-                            'jira_key' => $jiraIssue->key,
-                            'summary'  => $jiraIssue->fields->summary
-                        ];
-                    });
+                        //@TODO Use all issues callback later
+                        $this->searchJiraIssuesThisWeekByProject($jiraKey)
+                             ->getIssues()
+                    )->map($issuesMappingCallback);
 
                     $project->issues()->createMany(
                         $issuesData->all()
