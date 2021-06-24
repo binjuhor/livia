@@ -16,7 +16,8 @@
         "laravel/sanctum": "^2.6",
         "laravel/tinker": "^2.5",
         "lesstif/php-jira-rest-client": "^2.5",
-        "tightenco/ziggy": "^1.0"
+        "tightenco/ziggy": "^1.0",
+        "webfox/laravel-xero-oauth2": "^2.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

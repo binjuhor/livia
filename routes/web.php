@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\XeroController;
 use App\Http\Controllers\CreateInvoiceController;
 use App\Http\Controllers\ViewProjectController;
 use App\Http\Controllers\ImportJiraProjectController;
@@ -50,4 +51,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
             ->name('projects.createInvoice');
     });
 });
+
+/*
+ * We name this route xero.auth.success as by default the config looks for a route with this name to redirect back to
+ * after authentication has succeeded. The name of this route can be changed in the config file.
+ */
+Route::get('/manage/xero', XeroController::class)
+    ->name('xero.auth.success');
 
