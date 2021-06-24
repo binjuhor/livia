@@ -4,9 +4,11 @@ namespace Tests\Unit;
 
 use App\Invoices\InteractsWithInvoiceModel;
 use App\Invoices\InvoiceStatus;
+use App\Jobs\CreateXeroInvoice;
 use App\Models\Project;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use PHPUnit\Framework\TestCase;
+use Illuminate\Support\Facades\DB;
+use Tests\TestCase;
 
 class CreateXeroInvoiceJobTest extends TestCase
 {
@@ -22,6 +24,6 @@ class CreateXeroInvoiceJobTest extends TestCase
             null
         );
 
-        dd($invoice);
+        (new CreateXeroInvoice($invoice))->handle();
     }
 }
