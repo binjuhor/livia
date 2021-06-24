@@ -2,7 +2,7 @@
     "private": true,
     "scripts": {
         "bash": "cd laradock && docker-compose exec workspace bash",
-        "up": "cd laradock && docker-compose up -d nginx workspace",
+        "up": "cd laradock && docker-compose up -d nginx workspace certbot",
         "down": "cd laradock && docker-compose down -v",
         "dev": "npm run development",
         "development": "mix",

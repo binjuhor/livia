@@ -38,6 +38,11 @@ return [
             'profile',
             'offline_access',
             'accounting.settings',
+            'accounting.transactions',
+            'accounting.contacts',
+            'accounting.journals.read',
+            'accounting.reports.read',
+            'accounting.attachments'
         ],
 
         /************************************************************************

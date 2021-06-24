@@ -42,27 +42,37 @@ class CreateXeroInvoice implements ShouldQueue
      */
     public function handle()
     {
-        /** @var  $xeroCredentials */
-        $xeroCredentials = resolve(OauthCredentialManager::class);
-        /** @var AccountingApi $xeroAccountingApi */
-        $xeroAccountingApi = resolve(AccountingApi::class);
-        tap(
-            $this->createInvoice(),
-            function(XeroInvoice $xeroInvoice) use ($xeroCredentials, $xeroAccountingApi) {
-                $results = $xeroAccountingApi->createInvoices(
-                    $xeroCredentials->getTenantId(),
-                    new Invoices([$xeroInvoice])
-                );
+        if ($this->invoice->xero_id) {
+            return;
+        }
 
-                dd($results);
-            }
+        $xeroCredentials   = resolve(OauthCredentialManager::class);
+        $xeroAccountingApi = resolve(AccountingApi::class);
+        $xeroInvoice       = $this->createInvoice();
+
+        /** @var Invoices $invoices */
+        $invoices = $xeroAccountingApi->createInvoices(
+            $xeroCredentials->getTenantId(),
+            new Invoices([
+                'invoices' => [$xeroInvoice]
+            ])
         );
+
+        if ($invoices->count()) {
+            $xeroInvoice = collect($invoices->getInvoices())->first();
+            $this->invoice->setAttribute(
+                'xero_id',
+                $xeroInvoice->getInvoiceId()
+            )->save();
+        }
+
+        return $xeroInvoice;
     }
 
     public function createInvoice(): XeroInvoice
     {
         $lineItem = $this->createLineItem();
-        $contact = $this->createContact();
+        $contact  = $this->createContact();
 
         return (new XeroInvoice)
             ->setInvoiceNumber($this->invoice->reference ?: null)
@@ -72,7 +82,8 @@ class CreateXeroInvoice implements ShouldQueue
             ->setStatus(XeroInvoice::STATUS_AUTHORISED)
             ->setType(XeroInvoice::TYPE_ACCREC)
             ->setLineAmountTypes(LineAmountTypes::INCLUSIVE)
-            ->setContact($contact);
+            ->setContact($contact)
+            ->setCurrencyCode('AUD');
     }
 
     public function createLineItem(): LineItem

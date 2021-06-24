@@ -25,5 +25,8 @@ class CreateXeroInvoiceJobTest extends TestCase
         );
 
         (new CreateXeroInvoice($invoice))->handle();
+
+        $invoice->refresh();
+        $this->assertNotNull($invoice->xero_id);
     }
 }
