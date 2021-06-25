@@ -4,7 +4,7 @@ namespace Tests\Unit;
 
 use App\Jobs\CreateInvoice;
 use App\Models\Invoice;
-use App\Models\InvoiceItemLine;
+use App\Models\InvoiceLineItem;
 use App\Models\Project;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\InteractsWithTestProject;
@@ -26,12 +26,12 @@ class CreateInvoiceJobTest extends TestCase
     public function test_it_can_create_invoice_from_project()
     {
         $invoice = (new CreateInvoice($this->project))->handle();
-        /** @var InvoiceItemLine $itemLine */
-        $itemLine = $invoice->itemLines->first();
+        /** @var InvoiceLineItem $itemLine */
+        $itemLine = $invoice->lineItems->first();
 
         $this->assertInstanceOf(Invoice::class, $invoice);
         $this->assertEquals(60.0, $invoice->total);
-        $this->assertEquals(2, $invoice->itemLines->count());
+        $this->assertEquals(2, $invoice->lineItems->count());
 
         $this->assertDatabaseHas('invoices', [
             'id'        => $invoice->id,

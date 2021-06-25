@@ -5,7 +5,7 @@ namespace App\Jobs;
 use App\Invoices\InvoiceStatus;
 use App\Issues\InteractsWithIssueModel;
 use App\Models\Invoice;
-use App\Models\InvoiceItemLine;
+use App\Models\InvoiceLineItem;
 use App\Models\Issue;
 use App\Models\Project;
 use App\Projects\InteractsWithProjectModel;
@@ -57,7 +57,7 @@ class CreateInvoice implements ShouldQueue
                 'xero_id'   => null
             ]),
             function (Invoice $invoice) use ($itemLines) {
-                $invoice->itemLines()->saveMany(
+                $invoice->lineItems()->saveMany(
                     $itemLines->all()
                 );
             }
@@ -69,7 +69,7 @@ class CreateInvoice implements ShouldQueue
         return collect(
             $this->getProjectDoneIssues($project)
                  ->map(function (Issue $issue) {
-                     return InvoiceItemLine::factory()->make([
+                     return InvoiceLineItem::factory()->make([
                          'description' => sprintf(
                              '%s: %s',
                              $issue->jira_key,

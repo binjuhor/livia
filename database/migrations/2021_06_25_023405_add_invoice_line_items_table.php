@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddInvoiceItemLinesTable extends Migration
+class AddInvoiceLineItemsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class AddInvoiceItemLinesTable extends Migration
      */
     public function up()
     {
-        Schema::create('invoice_item_lines', function (Blueprint $table) {
+        Schema::create('invoice_line_items', function (Blueprint $table) {
             $table->id();
             $table->string('xero_id')->nullable();
             $table->foreignId('invoice_id')
@@ -35,7 +35,7 @@ class AddInvoiceItemLinesTable extends Migration
     public function down()
     {
         Schema::table('invoices', function (Blueprint $table) {
-            $table->dropForeign('invoice_item_lines_invoice_id_foreign');
+            $table->dropForeign('invoice_line_items_invoice_id_foreign');
             $table->dropIfExists();
         });
     }

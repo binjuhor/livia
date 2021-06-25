@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property int   quantity
- * @property float unit_amount
- * @property int   id
+ * @property int    quantity
+ * @property float  unit_amount
+ * @property int    id
+ * @property string description
  */
-class InvoiceItemLine extends Model
+class InvoiceLineItem extends Model
 {
     use HasFactory;
 
@@ -33,7 +34,7 @@ class InvoiceItemLine extends Model
         return $this->belongsTo(Invoice::class);
     }
 
-    public function getTotalAttribute()
+    public function getTotalAttribute(): float
     {
         return $this->quantity * $this->unit_amount;
     }

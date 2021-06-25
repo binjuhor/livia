@@ -11,8 +11,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @property string     reference
  * @property float      total
- * @property Collection itemLines
+ * @property Collection lineItems
  * @property int        id
+ * @property string     xero_id
  */
 class Invoice extends Model
 {
@@ -35,8 +36,8 @@ class Invoice extends Model
         return $this->belongsTo(Project::class);
     }
 
-    public function itemLines(): HasMany
+    public function lineItems(): HasMany
     {
-        return $this->hasMany(InvoiceItemLine::class);
+        return $this->hasMany(InvoiceLineItem::class);
     }
 }

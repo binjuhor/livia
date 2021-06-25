@@ -3,17 +3,17 @@
 namespace Database\Factories;
 
 use App\Models\Invoice;
-use App\Models\InvoiceItemLine;
+use App\Models\InvoiceLineItem;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class InvoiceItemLineFactory extends Factory
+class InvoiceLineItemFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = InvoiceItemLine::class;
+    protected $model = InvoiceLineItem::class;
 
     /**
      * Define the model's default state.
