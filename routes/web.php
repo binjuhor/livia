@@ -3,7 +3,7 @@
 use App\Http\Controllers\XeroController;
 use App\Http\Controllers\CreateInvoiceController;
 use App\Http\Controllers\ViewProjectController;
-use App\Http\Controllers\ImportJiraProjectController;
+use App\Http\Controllers\SyncJiraController;
 use App\Http\Controllers\ProjectController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -41,8 +41,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/', ProjectController::class)
              ->name('projects');
 
-        Route::post('/import/jira', ImportJiraProjectController::class)
-             ->name('projects.import.jira');
+        Route::post('/sync/jira', SyncJiraController::class)
+             ->name('projects.sync.jira');
 
         Route::get('/{projectId}', ViewProjectController::class)
              ->name('projects.view');

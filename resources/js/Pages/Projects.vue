@@ -10,7 +10,7 @@
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
                 <project-list :projects="projects" />
 
-                <project-import-jira class="mt-10 sm:mt-0" />
+                <project-sync-jira class="mt-10 sm:mt-0" />
             </div>
         </div>
     </app-layout>
@@ -19,7 +19,7 @@
 <script>
     import AppLayout from '@/Layouts/AppLayout'
     import ProjectList from '@/Pages/Projects/ProjectList'
-    import ProjectImportJira from '@/Pages/Projects/ProjectImportJira'
+    import ProjectSyncJira from '@/Pages/Projects/ProjectSyncJira'
 
     export default {
         props: [
@@ -29,7 +29,7 @@
         components: {
             AppLayout,
             ProjectList,
-            ProjectImportJira
+            ProjectSyncJira
         },
     }
 </script>
