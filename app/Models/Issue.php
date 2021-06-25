@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property string summary
+ * @property string jira_key
+ * @property float  story_point
+ */
 class Issue extends Model
 {
     use HasFactory;

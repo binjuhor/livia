@@ -61,4 +61,13 @@ trait InteractsWithProjectModel
                        ->where('status', IssueStatus::Done)
                        ->get();
     }
+
+    public function getProjectWeeklyReference(Project $project): string
+    {
+        return sprintf(
+            '%s-%s',
+            $project->jira_key,
+            now()->format('WY')
+        );
+    }
 }
