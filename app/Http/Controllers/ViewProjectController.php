@@ -14,7 +14,7 @@ class ViewProjectController extends Controller
     public function __invoke(int $projectId): Response
     {
         return Inertia::render('Projects/ProjectView', [
-            'project' => $this->getProject($projectId)
+            'project' => $this->getProjectOrFail($projectId)
                               ->load('issues')
                               ->load('invoices')
         ]);

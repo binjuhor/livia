@@ -42,6 +42,13 @@ trait InteractsWithProjectModel
                       ->find($projectId);
     }
 
+    /** @noinspection PhpIncompatibleReturnTypeInspection */
+    private function getProjectOrFail(int $projectId): ?Project
+    {
+        return Project::query()
+                      ->findOrFail($projectId);
+    }
+
     public function getProjectByKey(string $key)
     {
         return Project::query()

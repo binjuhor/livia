@@ -17,8 +17,8 @@
                         <div v-if="invoices.length > 0">
                             <div class="flex items-center justify-between" v-for="invoice in invoices"
                                  :key="invoice.id">
-                                <div class="text-gray-600">{{ invoice.xero_id }}</div>
                                 <div class="text-gray-600">{{ invoice.reference }}</div>
+                                <div class="text-gray-600">{{ invoice.xero_id }}</div>
                                 <div class="text-gray-600">{{ invoice.total }}</div>
                             </div>
                         </div>
