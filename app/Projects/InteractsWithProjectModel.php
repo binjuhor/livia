@@ -42,6 +42,13 @@ trait InteractsWithProjectModel
                       ->find($projectId);
     }
 
+    /** @noinspection PhpIncompatibleReturnTypeInspection */
+    private function getProjectOrFail(int $projectId): ?Project
+    {
+        return Project::query()
+                      ->findOrFail($projectId);
+    }
+
     public function getProjectByKey(string $key)
     {
         return Project::query()
@@ -60,5 +67,14 @@ trait InteractsWithProjectModel
         return $project->issues()
                        ->where('status', IssueStatus::Done)
                        ->get();
+    }
+
+    public function getProjectWeeklyReference(Project $project): string
+    {
+        return sprintf(
+            '%s-%s',
+            $project->jira_key,
+            now()->format('WY')
+        );
     }
 }

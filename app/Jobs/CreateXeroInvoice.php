@@ -3,11 +3,13 @@
 namespace App\Jobs;
 
 use App\Models\Invoice;
+use App\Models\InvoiceLineItem;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Collection;
 use Webfox\Xero\OauthCredentialManager;
 use XeroAPI\XeroPHP\Api\AccountingApi;
 use XeroAPI\XeroPHP\Models\Accounting\Contact;
@@ -38,7 +40,6 @@ class CreateXeroInvoice implements ShouldQueue
      * Execute the job.
      *
      * @return void
-     * @noinspection PhpUndefinedMethodInspection
      */
     public function handle()
     {
@@ -48,7 +49,7 @@ class CreateXeroInvoice implements ShouldQueue
 
         $xeroCredentials   = resolve(OauthCredentialManager::class);
         $xeroAccountingApi = resolve(AccountingApi::class);
-        $xeroInvoice       = $this->createInvoice();
+        $xeroInvoice       = $this->createInvoice($this->invoice);
 
         /** @var Invoices $invoices */
         $invoices = $xeroAccountingApi->createInvoices(
@@ -59,7 +60,10 @@ class CreateXeroInvoice implements ShouldQueue
         );
 
         if ($invoices->count()) {
-            $xeroInvoice = collect($invoices->getInvoices())->first();
+            $xeroInvoice = collect(
+                $invoices->getInvoices()
+            )->first();
+
             $this->invoice->setAttribute(
                 'xero_id',
                 $xeroInvoice->getInvoiceId()
@@ -69,16 +73,16 @@ class CreateXeroInvoice implements ShouldQueue
         return $xeroInvoice;
     }
 
-    public function createInvoice(): XeroInvoice
+    public function createInvoice(Invoice $invoice): XeroInvoice
     {
-        $lineItem = $this->createLineItem();
-        $contact  = $this->createContact();
+        $lineItems = $this->createLineItemsFromInvoice($invoice);
+        $contact   = $this->createContact();
 
         return (new XeroInvoice)
-            ->setInvoiceNumber($this->invoice->reference ?: null)
+            ->setInvoiceNumber($invoice->reference ?: null)
             ->setDate(now())
             ->setDueDate(now()->addDays(7))
-            ->setLineItems([$lineItem]) // @TODO: Make multiple lines later
+            ->setLineItems($lineItems->all())
             ->setStatus(XeroInvoice::STATUS_AUTHORISED)
             ->setType(XeroInvoice::TYPE_ACCREC)
             ->setLineAmountTypes(LineAmountTypes::INCLUSIVE)
@@ -86,15 +90,26 @@ class CreateXeroInvoice implements ShouldQueue
             ->setCurrencyCode('AUD');
     }
 
-    public function createLineItem(): LineItem
+    public function createLineItemsFromInvoice(Invoice $invoice): Collection
     {
-        return (new LineItem)
-            ->setDescription('Website development work')
-            ->setQuantity(1)
-            ->setUnitAmount($this->invoice->total ?? 0)
-            ->setAccountCode(200)
-            ->setTaxType('OUTPUT')
-            ->setDiscountRate(0);
+        $lineItems = collect();
+
+        if ($invoice->lineItems->count()) {
+            $invoice->lineItems->each(function (InvoiceLineItem $lineItem) use ($lineItems) {
+                $lineItems->push(
+                    (new LineItem)
+                        ->setDescription($lineItem->description)
+                        ->setQuantity($lineItem->quantity)
+                        ->setUnitAmount($lineItem->unit_amount)
+                        ->setAccountCode(200)
+                        ->setTaxType('OUTPUT')
+                        ->setDiscountRate(0)
+                );
+            });
+            return $lineItems;
+        }
+
+        throw new \LogicException(__('This invoice has no item to process.'));
     }
 
     public function createContact(): Contact
