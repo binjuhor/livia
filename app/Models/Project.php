@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property string jira_key
+ * @property int  id
  */
 class Project extends Model
 {

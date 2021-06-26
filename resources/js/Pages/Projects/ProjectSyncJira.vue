@@ -4,38 +4,38 @@
             <jet-section-border />
 
             <!-- Import Project From Jira -->
-            <jet-form-section @submitted="importJiraProject">
+            <jet-form-section @submitted="syncJiraProject">
                 <template #title>
-                    Import Project From Jira
+                    Sync Project From Jira
                 </template>
 
                 <template #description>
-                    Create a new project based on Jira Projects.
+                    Sync data from Jira like projects and issues.
                 </template>
 
                 <!-- Import Project Form -->
                 <template #form>
                     <div class="col-span-6">
                         <div class="max-w-xl text-sm text-gray-600">
-                            Please provide the key of the Jira project that you want to add. For example: CB.
+                            Please provide the key of the Jira project that you want to sync. For example: CB.
                         </div>
                     </div>
 
                     <!-- Jira Project Code -->
                     <div class="col-span-6 sm:col-span-4">
                         <jet-label for="jira_key" value="Jira project key" />
-                        <jet-input id="jira_key" type="text" class="mt-1 block w-full" v-model="addJiraProjectForm.jira_key" />
-                        <jet-input-error :message="addJiraProjectForm.errors.jira_key" class="mt-2" />
+                        <jet-input id="jira_key" type="text" class="mt-1 block w-full" v-model="syncJiraProjectForm.jira_key" />
+                        <jet-input-error :message="syncJiraProjectForm.errors.jira_key" class="mt-2" />
                     </div>
                 </template>
 
                 <template #actions>
-                    <jet-action-message :on="addJiraProjectForm.recentlySuccessful" class="mr-3">
-                        Imported.
+                    <jet-action-message :on="syncJiraProjectForm.recentlySuccessful" class="mr-3">
+                        Sync successfully.
                     </jet-action-message>
 
-                    <jet-button :class="{ 'opacity-25': addJiraProjectForm.processing }" :disabled="addJiraProjectForm.processing">
-                        Import
+                    <jet-button :class="{ 'opacity-25': syncJiraProjectForm.processing }" :disabled="syncJiraProjectForm.processing">
+                        Sync
                     </jet-button>
                 </template>
             </jet-form-section>
@@ -65,18 +65,18 @@
 
         data() {
             return {
-                addJiraProjectForm: this.$inertia.form({
+                syncJiraProjectForm: this.$inertia.form({
                     jira_key: '',
                 }),
             }
         },
 
         methods: {
-            importJiraProject() {
-                this.addJiraProjectForm.post(route('projects.import.jira'), {
-                    errorBag: 'addJiraProject',
+            syncJiraProject() {
+                this.syncJiraProjectForm.post(route('projects.sync.jira'), {
+                    errorBag: 'syncJiraProject',
                     preserveScroll: true,
-                    onSuccess: () => this.addJiraProjectForm.reset(),
+                    onSuccess: () => this.syncJiraProjectForm.reset(),
                 });
             }
         },

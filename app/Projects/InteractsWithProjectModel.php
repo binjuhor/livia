@@ -6,7 +6,7 @@ namespace App\Projects;
 
 use App\Issues\IssueStatus;
 use App\Models\Project;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
 trait InteractsWithProjectModel
 {
@@ -51,11 +51,11 @@ trait InteractsWithProjectModel
 
     public function findOrCreate(string $name, string $key)
     {
-        return Project::where('jira_key', $key)->first()
+        return Project::query()->where('jira_key', $key)->first()
             ?: $this->createProject($name, $key);
     }
 
-    private function getProjectDoneIssues(Project $project): Collection
+    private function getProjectDoneIssues(Project $project): EloquentCollection
     {
         return $project->issues()
                        ->where('status', IssueStatus::Done)
