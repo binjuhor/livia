@@ -34,38 +34,37 @@ class SyncJiraController extends Controller
         try {
             $jiraKey     = $request->post('jira_key');
             $jiraProject = $this->getJiraProject($jiraKey);
-
-            tap(
-                $this->findOrCreate(
-                    $jiraProject->name,
-                    $jiraProject->key
-                ),
-                function (Project $project) use ($jiraKey) {
-                    $issuesData = collect(
-                        $this->searchJiraIssuesThisWeekByProject($jiraKey)
-                             ->getIssues()
-                    )->map(function (IssueV3 $jiraIssue) use ($project) {
-                        return [
-                            'jira_key'    => $jiraIssue->key,
-                            'summary'     => $jiraIssue->fields->summary,
-                            'story_point' => $jiraIssue->fields->customFields[ 'customfield_10016' ] ?? 0,
-                            'type'        => IssueType::fromKey(
-                                $jiraIssue->fields->issuetype->name
-                            ),
-                            'status'      => IssueStatus::fromKey(
-                                Str::remove(' ', $jiraIssue->fields->status->name)
-                            ),
-                            'project_id'  => $project->id
-                        ];
-                    });
-
-                    $this->updateOrCreateIssues($issuesData);
-                }
+            $project     = $this->findOrCreate(
+                $jiraProject->name,
+                $jiraProject->key
             );
 
-        } catch (\Exception $exception) {
+            if ($project) {
+                $issuesData = collect(
+                    $this->searchJiraIssuesThisWeekByProject($jiraKey)
+                         ->getIssues()
+                )->map(function (IssueV3 $jiraIssue) use ($project) {
+                    return [
+                        'jira_key'    => $jiraIssue->key,
+                        'summary'     => $jiraIssue->fields->summary,
+                        'story_point' => $jiraIssue->fields->customFields[ 'customfield_10016' ] ?? 0,
+                        'type'        => IssueType::fromKey(
+                            $jiraIssue->fields->issuetype->name
+                        ),
+                        'status'      => IssueStatus::fromKey(
+                            Str::remove(' ', $jiraIssue->fields->status->name)
+                        ),
+                        'project_id'  => $project->id
+                    ];
+                });
+
+                $this->updateOrCreateIssues($issuesData);
+            }
+        } catch (\Throwable $exception) {
             report($exception);
-            abort(500, __('Could not sync project at this moment.'));
+            return back()->withMessage([
+                'message' => __('Could not sync project at this moment.')
+            ]);
         }
 
         return back(303);
