@@ -56,7 +56,8 @@ trait InteractsWithProjectModel
                       ->first();
     }
 
-    public function findOrCreate(string $name, string $key)
+    /** @noinspection PhpIncompatibleReturnTypeInspection */
+    public function findOrCreateProject(string $name, string $key): Project
     {
         return Project::query()->where('jira_key', $key)->first()
             ?: $this->createProject($name, $key);

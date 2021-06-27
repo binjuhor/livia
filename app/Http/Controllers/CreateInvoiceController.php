@@ -23,8 +23,8 @@ class CreateInvoiceController extends Controller
             }
         } catch (\Throwable $exception) {
             report($exception);
-            return back()->withMessage([
-                'message' => __('Could not create invoice at this moment.')
+            return back()->with([
+                'createInvoice' => __('Could not create invoice at this moment.')
             ]);
         }
 

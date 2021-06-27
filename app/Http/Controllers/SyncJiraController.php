@@ -29,12 +29,12 @@ class SyncJiraController extends Controller
                 'string',
                 'max:255'
             ]
-        ])->validateWithBag('addJiraProject');
+        ])->validateWithBag('syncJiraProject');
 
         try {
             $jiraKey     = $request->post('jira_key');
             $jiraProject = $this->getJiraProject($jiraKey);
-            $project     = $this->findOrCreate(
+            $project     = $this->findOrCreateProject(
                 $jiraProject->name,
                 $jiraProject->key
             );
@@ -62,8 +62,8 @@ class SyncJiraController extends Controller
             }
         } catch (\Throwable $exception) {
             report($exception);
-            return back()->withMessage([
-                'message' => __('Could not sync project at this moment.')
+            return back()->with([
+                'syncJiraProject' => __('Could not sync project at this moment.')
             ]);
         }
 
