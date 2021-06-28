@@ -96,6 +96,11 @@ class CreateXeroInvoice implements ShouldQueue
 
         if ($invoice->lineItems->count()) {
             $invoice->lineItems->each(function (InvoiceLineItem $lineItem) use ($lineItems) {
+
+                if($lineItem->isFree()) {
+                    return true;
+                }
+
                 $lineItems->push(
                     (new LineItem)
                         ->setDescription($lineItem->description)
@@ -103,8 +108,9 @@ class CreateXeroInvoice implements ShouldQueue
                         ->setUnitAmount($lineItem->unit_amount)
                         ->setAccountCode(200)
                         ->setTaxType('OUTPUT')
-                        ->setDiscountRate(0)
                 );
+
+                return true;
             });
             return $lineItems;
         }

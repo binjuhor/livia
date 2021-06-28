@@ -29,6 +29,10 @@ class InvoiceLineItem extends Model
         'unit_amount'
     ];
 
+    protected $casts = [
+        'quantity' => 'integer'
+    ];
+
     public function invoice(): BelongsTo
     {
         return $this->belongsTo(Invoice::class);
@@ -37,5 +41,10 @@ class InvoiceLineItem extends Model
     public function getTotalAttribute(): float
     {
         return $this->quantity * $this->unit_amount;
+    }
+
+    public function isFree(): bool
+    {
+        return 0 === $this->quantity;
     }
 }

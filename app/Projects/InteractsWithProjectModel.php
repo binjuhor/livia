@@ -21,11 +21,11 @@ trait InteractsWithProjectModel
     public function resolveProject($input)
     {
         if (is_numeric($input)) {
-            return $this->getProject($input);
+            return $this->findProject($input);
         }
 
         if (is_string($input)) {
-            return $this->getProjectByKey($input);
+            return $this->findProjectByKey($input);
         }
 
         abort(400, __('Bad input to find project.'));
@@ -36,45 +36,37 @@ trait InteractsWithProjectModel
      * @return Project|null
      * @noinspection PhpIncompatibleReturnTypeInspection
      */
-    public function getProject(int $projectId): ?Project
+    public function findProject(int $projectId): ?Project
     {
         return Project::query()
                       ->find($projectId);
     }
 
     /** @noinspection PhpIncompatibleReturnTypeInspection */
-    private function getProjectOrFail(int $projectId): ?Project
+    private function findProjectOrFail(int $projectId): ?Project
     {
         return Project::query()
                       ->findOrFail($projectId);
     }
 
-    public function getProjectByKey(string $key)
+    public function findProjectByKey(string $key)
     {
         return Project::query()
                       ->where('jira_key', $key)
                       ->first();
     }
 
-    public function findOrCreate(string $name, string $key)
+    /** @noinspection PhpIncompatibleReturnTypeInspection */
+    public function findOrCreateProject(string $name, string $key): Project
     {
         return Project::query()->where('jira_key', $key)->first()
             ?: $this->createProject($name, $key);
     }
 
-    private function getProjectDoneIssues(Project $project): EloquentCollection
+    private function findProjectDoneIssues(Project $project): EloquentCollection
     {
         return $project->issues()
                        ->where('status', IssueStatus::Done)
                        ->get();
-    }
-
-    public function getProjectWeeklyReference(Project $project): string
-    {
-        return sprintf(
-            '%s-%s',
-            $project->jira_key,
-            now()->format('WY')
-        );
     }
 }
