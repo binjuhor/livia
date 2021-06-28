@@ -4,6 +4,7 @@
 namespace App\Invoices;
 
 use App\Models\Invoice;
+use App\Models\Project;
 
 trait InteractsWithInvoiceModel
 {
@@ -18,5 +19,13 @@ trait InteractsWithInvoiceModel
             'status'    => $status,
             'xero_id'   => null
         ]);
+    }
+
+    /** @noinspection PhpIncompatibleReturnTypeInspection */
+    public function findInvoiceByProject(Project $project): ?Invoice
+    {
+        return Invoice::query()
+                      ->where('project_id', $project->id)
+                      ->first();
     }
 }
