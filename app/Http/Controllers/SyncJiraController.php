@@ -54,11 +54,13 @@ class SyncJiraController extends Controller
                         'status'      => IssueStatus::fromKey(
                             Str::remove(' ', $jiraIssue->fields->status->name)
                         ),
-                        'project_id'  => $project->id
+                        'project_id'  => $project->id,
+                        'created_at' => $jiraIssue->fields->created,
+                        'updated_at' => $jiraIssue->fields->updated
                     ];
                 });
 
-                $this->updateOrCreateIssues($issuesData);
+                $this->upsertIssues($issuesData);
             }
         } catch (\Throwable $exception) {
             report($exception);
