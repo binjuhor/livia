@@ -27,7 +27,9 @@ class Issue extends Model
         'project_id',
         'story_point',
         'type',
-        'status'
+        'status',
+        'created_at',
+        'updated_at'
     ];
 
     public function project(): BelongsTo
