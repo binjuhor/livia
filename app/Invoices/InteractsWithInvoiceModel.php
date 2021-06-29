@@ -25,7 +25,9 @@ trait InteractsWithInvoiceModel
     public function findInvoiceByProject(Project $project): ?Invoice
     {
         return Invoice::query()
-                      ->where('project_id', $project->id)
-                      ->first();
+                      ->where(
+                          'reference',
+                          InvoiceUtils::generateWeeklyInvoiceReference($project)
+                      )->first();
     }
 }

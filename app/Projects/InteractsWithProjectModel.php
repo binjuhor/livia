@@ -62,11 +62,4 @@ trait InteractsWithProjectModel
         return Project::query()->where('jira_key', $key)->first()
             ?: $this->createProject($name, $key);
     }
-
-    private function findProjectDoneIssues(Project $project): EloquentCollection
-    {
-        return $project->issues()
-                       ->where('status', IssueStatus::Done)
-                       ->get();
-    }
 }

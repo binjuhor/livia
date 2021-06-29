@@ -41,8 +41,6 @@ class UpdateXeroInvoice implements ShouldQueue
             return;
         }
 
-        $invoice = $this->invoice;
-        $xeroInvoice = $this->findXeroInvoice($this->invoice->xero_id);
-
+        return $this->updateXeroInvoice($this->invoice);
     }
 }

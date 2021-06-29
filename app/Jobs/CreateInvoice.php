@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Invoices\InvoiceStatus;
+use App\Invoices\InvoiceUtils;
 use App\Issues\InteractsWithIssueModel;
 use App\Models\Invoice;
 use App\Models\InvoiceLineItem;
@@ -47,11 +48,7 @@ class CreateInvoice implements ShouldQueue
 
         return tap(
             $project->invoices()->create([
-                'reference' => sprintf(
-                    '%s-%s',
-                    $project->jira_key,
-                    now()->format('WY')
-                ),
+                'reference' => InvoiceUtils::generateWeeklyInvoiceReference($project),
                 'total'     => $itemLines->sum('total'),
                 'status'    => InvoiceStatus::Draft,
                 'xero_id'   => null
@@ -67,7 +64,7 @@ class CreateInvoice implements ShouldQueue
     public function createItemLinesFromProject(Project $project): Collection
     {
         return collect(
-            $this->findProjectDoneIssues($project)
+            $this->findIssuesDoneThisWeek($project)
                  ->map(function (Issue $issue) {
                      return InvoiceLineItem::factory()->make([
                          'description' => $issue->summary,

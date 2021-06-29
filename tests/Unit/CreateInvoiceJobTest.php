@@ -26,8 +26,8 @@ class CreateInvoiceJobTest extends TestCase
     public function test_it_can_create_invoice_from_project()
     {
         $invoice = (new CreateInvoice($this->project))->handle();
-        /** @var InvoiceLineItem $itemLine */
-        $itemLine = $invoice->lineItems->first();
+        /** @var InvoiceLineItem $lineItem */
+        $lineItem = $invoice->lineItems->first();
 
         $this->assertInstanceOf(Invoice::class, $invoice);
         $this->assertEquals(60.0, $invoice->total);
@@ -38,9 +38,9 @@ class CreateInvoiceJobTest extends TestCase
             'reference' => $invoice->reference
         ]);
 
-        $this->assertDatabaseHas('invoice_item_lines', [
-            'id'          => $itemLine->id,
-            'description' => 'TEST-1: Issue summary 1',
+        $this->assertDatabaseHas('invoice_line_items', [
+            'id'          => $lineItem->id,
+            'description' => 'Issue summary 1',
             'unit_amount' => 20.0
         ]);
     }

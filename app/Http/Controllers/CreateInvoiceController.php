@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Invoices\InteractsWithInvoiceModel;
 use App\Jobs\CreateInvoice;
 use App\Jobs\CreateXeroInvoice;
+use App\Jobs\UpdateXeroInvoice;
 use App\Projects\InteractsWithProjectModel;
 use Illuminate\Http\RedirectResponse;
 
@@ -18,11 +19,12 @@ class CreateInvoiceController extends Controller
         try {
             $project = $this->findProjectOrFail($projectId);
             $invoice = $this->findInvoiceByProject($project)
-                ?: (new CreateInvoice($project))->handle();;
+                ?: (new CreateInvoice($project))->handle();
 
+            //@TODO: Validate result and return error if any
             if ($invoice->hasXeroId()) {
-                // Update invoice
-            }else{
+                (new UpdateXeroInvoice($invoice))->handle();
+            } else {
                 (new CreateXeroInvoice($invoice))->handle();
             }
         } catch (\Throwable $exception) {
