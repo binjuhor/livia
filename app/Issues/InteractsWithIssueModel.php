@@ -31,7 +31,7 @@ trait InteractsWithIssueModel
         return Issue::query()
                     ->where('project_id', $project->id)
                     ->where('status', IssueStatus::Done)
-                    ->where('updated_at', '>=', now()->startOfWeek())
+                    ->where('updated_at', '>=', now('GMT+7')->startOfWeek())
                     ->get();
     }
 }

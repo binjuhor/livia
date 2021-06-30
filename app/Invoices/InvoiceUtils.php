@@ -6,7 +6,7 @@ use App\Models\Project;
 
 class InvoiceUtils
 {
-    public static function generateWeeklyInvoiceReference(Project $project): string
+    public static function getWeeklyRef(Project $project): string
     {
         return sprintf(
             '%s-%s',

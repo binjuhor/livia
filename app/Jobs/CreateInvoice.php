@@ -48,7 +48,7 @@ class CreateInvoice implements ShouldQueue
 
         return tap(
             $project->invoices()->create([
-                'reference' => InvoiceUtils::generateWeeklyInvoiceReference($project),
+                'reference' => InvoiceUtils::getWeeklyRef($project),
                 'total'     => $itemLines->sum('total'),
                 'status'    => InvoiceStatus::Draft,
                 'xero_id'   => null

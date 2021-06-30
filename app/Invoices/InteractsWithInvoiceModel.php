@@ -27,7 +27,7 @@ trait InteractsWithInvoiceModel
         return Invoice::query()
                       ->where(
                           'reference',
-                          InvoiceUtils::generateWeeklyInvoiceReference($project)
+                          InvoiceUtils::getWeeklyRef($project)
                       )->first();
     }
 }
