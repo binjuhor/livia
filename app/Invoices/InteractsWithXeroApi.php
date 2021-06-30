@@ -5,13 +5,14 @@ namespace App\Invoices;
 use App\Models\Invoice;
 use App\Models\InvoiceLineItem;
 use Illuminate\Support\Collection;
+use LogicException;
 use Webfox\Xero\OauthCredentialManager;
 use XeroAPI\XeroPHP\Api\AccountingApi;
 use XeroAPI\XeroPHP\Models\Accounting\Contact;
 use XeroAPI\XeroPHP\Models\Accounting\Invoice as XeroInvoice;
 use XeroAPI\XeroPHP\Models\Accounting\Invoices;
 use XeroAPI\XeroPHP\Models\Accounting\LineAmountTypes;
-use XeroAPI\XeroPHP\Models\Accounting\LineItem;
+use XeroAPI\XeroPHP\Models\Accounting\LineItem as XeroLineItem;
 
 trait InteractsWithXeroApi
 {
@@ -47,7 +48,7 @@ trait InteractsWithXeroApi
         return $this->getFirstXeroInvoice($invoices);
     }
 
-    public function createNewXeroInvoice(XeroInvoice $invoice): ?XeroInvoice
+    public function storeXeroInvoice(XeroInvoice $invoice): ?XeroInvoice
     {
         return $this->getFirstXeroInvoice(
             $this->xeroAccountingApi()->createInvoices(
@@ -68,7 +69,7 @@ trait InteractsWithXeroApi
 
     public function createXeroInvoice(Invoice $invoice): XeroInvoice
     {
-        return $this->createNewXeroInvoice(
+        return $this->storeXeroInvoice(
             $this->makeXeroInvoice($invoice)
         );
     }
@@ -81,9 +82,7 @@ trait InteractsWithXeroApi
                 $invoice->xero_id,
                 new Invoices([
                     'invoices' => [
-                        $this->findXeroInvoice(
-                            $invoice->xero_id
-                        )
+                        $this->makeXeroInvoice($invoice)
                     ]
                 ])
             )
@@ -119,7 +118,8 @@ trait InteractsWithXeroApi
                 }
 
                 $lineItems->push(
-                    (new LineItem)
+                    (new XeroLineItem)
+                        ->setItemCode($lineItem->jira_key)
                         ->setDescription($lineItem->description)
                         ->setQuantity($lineItem->quantity)
                         ->setUnitAmount($lineItem->unit_amount)
@@ -132,7 +132,7 @@ trait InteractsWithXeroApi
             return $lineItems;
         }
 
-        throw new \LogicException(__('This invoice has no item to process.'));
+        throw new LogicException(__('This invoice has no item to process.'));
     }
 
     public function makeXeroContact(): Contact

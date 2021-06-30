@@ -42,6 +42,14 @@ class CreateXeroInvoice implements ShouldQueue
             return null;
         }
 
-        return $this->createXeroInvoice($this->invoice);
+        return tap(
+            $this->createXeroInvoice($this->invoice),
+            function (XeroInvoice $xeroInvoice) {
+                $this->invoice->setAttribute(
+                    'xero_id',
+                    $xeroInvoice->getInvoiceId()
+                )->save();
+            }
+        );
     }
 }

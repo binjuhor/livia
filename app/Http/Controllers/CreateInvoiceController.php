@@ -18,8 +18,7 @@ class CreateInvoiceController extends Controller
     {
         try {
             $project = $this->findProjectOrFail($projectId);
-            $invoice = $this->findInvoiceByProject($project)
-                ?: (new CreateInvoice($project))->handle();
+            $invoice = (new CreateInvoice($project))->handle();
 
             //@TODO: Validate result and return error if any
             if ($invoice->hasXeroId()) {
@@ -28,6 +27,7 @@ class CreateInvoiceController extends Controller
                 (new CreateXeroInvoice($invoice))->handle();
             }
         } catch (\Throwable $exception) {
+            dd($exception);
             report($exception);
             return back()->with([
                 'createInvoice' => __('Could not create invoice at this moment.')
