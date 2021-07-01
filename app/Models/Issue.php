@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string summary
  * @property string jira_key
  * @property float  story_point
+ * @property int    id
  */
 class Issue extends Model
 {

@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property Collection lineItems
  * @property int        id
  * @property string     xero_id
+ * @property Project    project
  */
 class Invoice extends Model
 {

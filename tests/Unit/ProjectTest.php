@@ -3,10 +3,13 @@
 namespace Tests\Unit;
 
 use App\Models\Project;
-use PHPUnit\Framework\TestCase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class ProjectTest extends TestCase
 {
+    use DatabaseTransactions;
+
     /**
      * Project basic model test
      *

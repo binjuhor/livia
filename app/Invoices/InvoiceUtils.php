@@ -14,4 +14,15 @@ class InvoiceUtils
             now()->format('WY')
         );
     }
+
+    public static function getJiraKey(string $description)
+    {
+        preg_match('/\((.*?)\)/', $description, $matches);
+
+        if (2 === count($matches)) {
+            return $matches[ 1 ];
+        }
+
+        return null;
+    }
 }
