@@ -71,11 +71,11 @@ class UpsertInvoice implements ShouldQueue
 
                 $invoice->refresh();
 
-                if ($invoice->hasXeroId()) {
-                    (new UpdateXeroInvoice($invoice))->handle();
-                } else {
-                    (new CreateXeroInvoice($invoice))->handle();
-                }
+//                if ($invoice->hasXeroId()) {
+//                    (new UpdateXeroInvoice($invoice))->handle();
+//                } else {
+//                    (new CreateXeroInvoice($invoice))->handle();
+//                }
             }
         );
     }
