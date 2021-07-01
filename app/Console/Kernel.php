@@ -2,11 +2,16 @@
 
 namespace App\Console;
 
+use App\Jobs\SyncJiraIssuesForProject;
+use App\Jobs\UpsertInvoice;
+use App\Projects\InteractsWithProjectModel;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
+    use InteractsWithProjectModel;
+
     /**
      * The Artisan commands provided by your application.
      *
@@ -24,7 +29,17 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->job(
+            (new SyncJiraIssuesForProject(
+                $this->findProjectByKey('PM')
+            ))
+        )->daily();
+
+        $schedule->job(
+            (new UpsertInvoice(
+                $this->findProjectByKey('PM')
+            ))
+        )->daily();
     }
 
     /**

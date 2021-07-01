@@ -18,13 +18,7 @@ class CreateInvoiceController extends Controller
     {
         try {
             $project = $this->findProjectOrFail($projectId);
-            $invoice = (new UpsertInvoice($project))->handle();
-
-            if ($invoice->hasXeroId()) {
-                (new UpdateXeroInvoice($invoice))->handle();
-            } else {
-                (new CreateXeroInvoice($invoice))->handle();
-            }
+            (new UpsertInvoice($project))->handle();
         } catch (\Throwable $exception) {
             report($exception);
             return back()->with([
