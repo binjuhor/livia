@@ -67,14 +67,10 @@ class CreateInvoice implements ShouldQueue
     public function createItemLinesFromProject(Project $project): Collection
     {
         return collect(
-            $this->getProjectDoneIssues($project)
+            $this->findProjectDoneIssues($project)
                  ->map(function (Issue $issue) {
                      return InvoiceLineItem::factory()->make([
-                         'description' => sprintf(
-                             '%s: %s',
-                             $issue->jira_key,
-                             $issue->summary
-                         ),
+                         'description' => $issue->summary,
                          'invoice_id'  => null,
                          'xero_id'     => null,
                          'quantity'    => $issue->story_point,

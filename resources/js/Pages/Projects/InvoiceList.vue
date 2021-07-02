@@ -1,3 +1,4 @@
+<!--suppress NpmUsedModulesInstalled, JSUnresolvedVariable -->
 <template>
     <div>
         <div v-if="true">
