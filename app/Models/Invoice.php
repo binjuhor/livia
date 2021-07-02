@@ -40,4 +40,9 @@ class Invoice extends Model
     {
         return $this->hasMany(InvoiceLineItem::class);
     }
+
+    public function hasXeroId(): bool
+    {
+        return is_string($this->xero_id);
+    }
 }

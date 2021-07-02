@@ -9,10 +9,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use XeroAPI\XeroPHP\Api\AccountingApi;
-use XeroAPI\XeroPHP\Models\Accounting\Invoice as XeroInvoice;
 
-class CreateXeroInvoice implements ShouldQueue
+
+class UpdateXeroInvoice implements ShouldQueue
 {
     use Dispatchable,
         InteractsWithQueue,
@@ -34,22 +33,14 @@ class CreateXeroInvoice implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @return XeroInvoice
+     * @return void
      */
-    public function handle(): ?XeroInvoice
+    public function handle()
     {
-        if ($this->invoice->xero_id) {
-            return null;
+        if (is_null($this->invoice->xero_id)) {
+            return;
         }
 
-        return tap(
-            $this->createXeroInvoice($this->invoice),
-            function (XeroInvoice $xeroInvoice) {
-                $this->invoice->setAttribute(
-                    'xero_id',
-                    $xeroInvoice->getInvoiceId()
-                )->save();
-            }
-        );
+        dd($this->updateXeroInvoice($this->invoice));
     }
 }

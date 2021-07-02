@@ -2,26 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use App\Invoices\InteractsWithInvoiceModel;
 use App\Jobs\CreateInvoice;
 use App\Jobs\CreateXeroInvoice;
+use App\Jobs\UpdateXeroInvoice;
 use App\Projects\InteractsWithProjectModel;
 use Illuminate\Http\RedirectResponse;
 
 class CreateInvoiceController extends Controller
 {
-    use InteractsWithProjectModel;
+    use InteractsWithProjectModel,
+        InteractsWithInvoiceModel;
 
     public function __invoke(int $projectId): RedirectResponse
     {
         try {
-            $invoice = (new CreateInvoice(
-                $this->findProjectOrFail($projectId)
-            ))->handle();
+            $project = $this->findProjectOrFail($projectId);
+            $invoice = (new CreateInvoice($project))->handle();
 
-            if ($invoice) {
+            //@TODO: Validate result and return error if any
+            if ($invoice->hasXeroId()) {
+                (new UpdateXeroInvoice($invoice))->handle();
+            } else {
                 (new CreateXeroInvoice($invoice))->handle();
             }
         } catch (\Throwable $exception) {
+            dd($exception);
             report($exception);
             return back()->with([
                 'createInvoice' => __('Could not create invoice at this moment.')

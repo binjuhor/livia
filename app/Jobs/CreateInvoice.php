@@ -2,7 +2,9 @@
 
 namespace App\Jobs;
 
+use App\Invoices\InteractsWithInvoiceModel;
 use App\Invoices\InvoiceStatus;
+use App\Invoices\InvoiceUtils;
 use App\Issues\InteractsWithIssueModel;
 use App\Models\Invoice;
 use App\Models\InvoiceLineItem;
@@ -23,7 +25,8 @@ class CreateInvoice implements ShouldQueue
         Queueable,
         SerializesModels,
         InteractsWithProjectModel,
-        InteractsWithIssueModel;
+        InteractsWithIssueModel,
+        InteractsWithInvoiceModel;
 
     protected Project $project;
 
@@ -42,41 +45,27 @@ class CreateInvoice implements ShouldQueue
      */
     public function handle(): Invoice
     {
-        $project   = $this->project;
-        $itemLines = $this->createItemLinesFromProject($project);
-
         return tap(
-            $project->invoices()->create([
-                'reference' => sprintf(
-                    '%s-%s',
-                    $project->jira_key,
-                    now()->format('WY')
-                ),
-                'total'     => $itemLines->sum('total'),
-                'status'    => InvoiceStatus::Draft,
-                'xero_id'   => null
-            ]),
-            function (Invoice $invoice) use ($itemLines) {
-                $invoice->lineItems()->saveMany(
-                    $itemLines->all()
-                );
-            }
-        );
-    }
+            $this->createInvoiceFromProject($this->project),
+            function (?Invoice $invoice) {
+                if ($invoice) {
+                    $invoice->lineItems()->upsert(
+                        $this->makeItemLines($this->project)
+                             ->map(function (InvoiceLineItem $lineItem) use ($invoice) {
+                                 $lineItem->invoice_id = $invoice->id;
 
-    public function createItemLinesFromProject(Project $project): Collection
-    {
-        return collect(
-            $this->findProjectDoneIssues($project)
-                 ->map(function (Issue $issue) {
-                     return InvoiceLineItem::factory()->make([
-                         'description' => $issue->summary,
-                         'invoice_id'  => null,
-                         'xero_id'     => null,
-                         'quantity'    => $issue->story_point,
-                         'unit_amount' => config('livia.rate', 20)
-                     ]);
-                 })
+                                 return $lineItem;
+                             })
+                             ->toArray(),
+                        ['issue_id'],
+                        [
+                            'description',
+                            'quantity',
+                            'unit_amount'
+                        ]
+                    );
+                }
+            }
         );
     }
 }

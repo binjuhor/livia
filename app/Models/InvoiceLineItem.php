@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property float  unit_amount
  * @property int    id
  * @property string description
+ * @property string jira_key
  */
 class InvoiceLineItem extends Model
 {
@@ -27,10 +28,6 @@ class InvoiceLineItem extends Model
         'description',
         'quantity',
         'unit_amount'
-    ];
-
-    protected $casts = [
-        'quantity' => 'integer'
     ];
 
     public function invoice(): BelongsTo
