@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Jobs\CreateInvoice;
+use App\Jobs\UpsertInvoice;
 use App\Models\Invoice;
 use App\Models\InvoiceLineItem;
 use App\Models\Project;
@@ -25,7 +25,7 @@ class CreateInvoiceJobTest extends TestCase
 
     public function test_it_can_create_invoice_from_project()
     {
-        $invoice = (new CreateInvoice($this->project))->handle();
+        $invoice = (new UpsertInvoice($this->project))->handle();
         /** @var InvoiceLineItem $lineItem */
         $lineItem = $invoice->lineItems->first();
 

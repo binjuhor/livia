@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property int    quantity
- * @property float  unit_amount
- * @property int    id
- * @property string description
- * @property string jira_key
+ * @property float       quantity
+ * @property float       unit_amount
+ * @property int         id
+ * @property string      description
+ * @property string      jira_key
+ * @property int         invoice_id
+ * @property string|null xero_id
  */
 class InvoiceLineItem extends Model
 {
@@ -30,6 +32,10 @@ class InvoiceLineItem extends Model
         'unit_amount'
     ];
 
+    protected $casts = [
+        'quantity' => 'float'
+    ];
+
     public function invoice(): BelongsTo
     {
         return $this->belongsTo(Invoice::class);
@@ -42,6 +48,6 @@ class InvoiceLineItem extends Model
 
     public function isFree(): bool
     {
-        return 0 === $this->quantity;
+        return 0.0 === $this->quantity;
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Invoices\InteractsWithInvoiceModel;
-use App\Jobs\CreateInvoice;
+use App\Jobs\UpsertInvoice;
 use App\Jobs\CreateXeroInvoice;
 use App\Jobs\UpdateXeroInvoice;
 use App\Projects\InteractsWithProjectModel;
@@ -18,9 +18,8 @@ class CreateInvoiceController extends Controller
     {
         try {
             $project = $this->findProjectOrFail($projectId);
-            $invoice = (new CreateInvoice($project))->handle();
+            $invoice = (new UpsertInvoice($project))->handle();
 
-            //@TODO: Validate result and return error if any
             if ($invoice->hasXeroId()) {
                 (new UpdateXeroInvoice($invoice))->handle();
             } else {

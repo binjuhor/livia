@@ -119,6 +119,7 @@ trait InteractsWithXeroApi
 
                 $lineItems->push(
                     (new XeroLineItem)
+                        ->setLineItemId($lineItem->xero_id)
                         ->setItemCode($lineItem->jira_key)
                         ->setDescription($lineItem->description)
                         ->setQuantity($lineItem->quantity)
