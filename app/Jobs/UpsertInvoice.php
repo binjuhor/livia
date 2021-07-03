@@ -68,6 +68,14 @@ class UpsertInvoice implements ShouldQueue
 
                 $invoice->total = $invoice->lineItems->sum('total');
                 $invoice->save();
+
+                $invoice->refresh();
+
+                if ($invoice->hasXeroId()) {
+                    (new UpdateXeroInvoice($invoice))->handle();
+                } else {
+                    (new CreateXeroInvoice($invoice))->handle();
+                }
             }
         );
     }

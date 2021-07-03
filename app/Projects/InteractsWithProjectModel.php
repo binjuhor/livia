@@ -3,10 +3,7 @@
 
 namespace App\Projects;
 
-
-use App\Issues\IssueStatus;
 use App\Models\Project;
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
 trait InteractsWithProjectModel
 {
@@ -49,7 +46,8 @@ trait InteractsWithProjectModel
                       ->findOrFail($projectId);
     }
 
-    public function findProjectByKey(string $key)
+    /** @noinspection PhpIncompatibleReturnTypeInspection */
+    public function findProjectByKey(string $key): ?Project
     {
         return Project::query()
                       ->where('jira_key', $key)
