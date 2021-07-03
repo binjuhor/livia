@@ -24,7 +24,7 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @param Schedule $schedule
      * @return void
      */
     protected function schedule(Schedule $schedule)
@@ -33,13 +33,13 @@ class Kernel extends ConsoleKernel
             (new SyncJiraIssuesForProject(
                 $this->findProjectByKey('PM')
             ))
-        )->daily();
+        )->daily()->emailOutputTo('son@chillbits.com');
 
         $schedule->job(
             (new UpsertInvoice(
                 $this->findProjectByKey('PM')
             ))
-        )->daily();
+        )->daily()->emailOutputTo('son@chillbits.com');
     }
 
     /**
