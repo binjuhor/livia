@@ -34,13 +34,17 @@ trait InteractsWithInvoiceModel
                       )->first();
     }
 
-    public function makeItemLines(Project $project): Collection
+    public function makeLineItems(Project $project): Collection
     {
         return collect(
             $this->findIssuesDoneThisWeek($project)
                  ->map(function (Issue $issue) {
                      return InvoiceLineItem::factory()->make([
-                         'description' => $issue->summary,
+                         'description' => sprintf(
+                             '(%s) %s',
+                             $issue->jira_key,
+                             $issue->summary
+                         ),
                          'invoice_id'  => null,
                          'xero_id'     => null,
                          'quantity'    => $issue->story_point,
@@ -53,11 +57,10 @@ trait InteractsWithInvoiceModel
 
     private function createInvoiceFromProject(Project $project): ?Invoice
     {
-        $itemLines   = $this->makeItemLines($project);
         $reference   = InvoiceUtils::getWeeklyRef($project);
         $invoiceData = [
             'reference'  => $reference,
-            'total'      => $itemLines->sum('total'),
+            'total'      => 0,
             'status'     => InvoiceStatus::Draft,
             'project_id' => $project->id
         ];
@@ -65,7 +68,7 @@ trait InteractsWithInvoiceModel
         Invoice::query()->upsert(
             $invoiceData,
             ['reference'],
-            ['total', 'status']
+            ['status']
         );
 
         return $this->findInvoiceByProject($project);
@@ -75,5 +78,15 @@ trait InteractsWithInvoiceModel
     public function findInvoice(int $id): ?Invoice
     {
         return Invoice::query()->find($id);
+    }
+
+    /** @noinspection PhpIncompatibleReturnTypeInspection */
+    public function findLineItemByDescription(string $description): ?InvoiceLineItem
+    {
+        $jiraKey = InvoiceUtils::getJiraKey($description);
+
+        return InvoiceLineItem::query()
+                              ->where('description', 'LIKE', "%{$jiraKey}%")
+                              ->first();
     }
 }

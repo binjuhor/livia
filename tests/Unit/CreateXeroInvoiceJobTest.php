@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use App\Invoices\InteractsWithInvoiceModel;
-use App\Jobs\CreateInvoice;
+use App\Jobs\UpsertInvoice;
 use App\Jobs\CreateXeroInvoice;
 use App\Models\Invoice;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -22,7 +22,7 @@ class CreateXeroInvoiceJobTest extends TestCase
     {
         parent::setUp();
 
-        $this->invoice = (new CreateInvoice(
+        $this->invoice = (new UpsertInvoice(
             $this->getTestProject()
         ))->handle();
     }

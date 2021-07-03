@@ -3,16 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Issues\InteractsWithIssueModel;
-use App\Issues\IssueStatus;
+use App\Jobs\SyncJiraIssuesForProject;
 use App\Projects\InteractsWithProjectModel;
 use App\Services\InteractsWithJira;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
-use JiraRestApi\Issue\IssueV3;
-use App\Models\Project;
-use App\Issues\IssueType;
 
 class SyncJiraController extends Controller
 {
@@ -40,27 +36,7 @@ class SyncJiraController extends Controller
             );
 
             if ($project) {
-                $issuesData = collect(
-                    $this->searchJiraIssuesThisWeekByProject($jiraKey)
-                         ->getIssues()
-                )->map(function (IssueV3 $jiraIssue) use ($project) {
-                    return [
-                        'jira_key'    => $jiraIssue->key,
-                        'summary'     => $jiraIssue->fields->summary,
-                        'story_point' => $jiraIssue->fields->customFields[ 'customfield_10016' ] ?? 0,
-                        'type'        => IssueType::fromKey(
-                            $jiraIssue->fields->issuetype->name
-                        ),
-                        'status'      => IssueStatus::fromKey(
-                            Str::remove(' ', $jiraIssue->fields->status->name)
-                        ),
-                        'project_id'  => $project->id,
-                        'created_at' => $jiraIssue->fields->created,
-                        'updated_at' => $jiraIssue->fields->updated
-                    ];
-                });
-
-                $this->upsertIssues($issuesData);
+                (new SyncJiraIssuesForProject($project))->handle();
             }
         } catch (\Throwable $exception) {
             report($exception);
