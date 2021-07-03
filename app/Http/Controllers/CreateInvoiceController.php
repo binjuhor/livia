@@ -27,7 +27,6 @@ class CreateInvoiceController extends Controller
                 (new CreateXeroInvoice($invoice))->handle();
             }
         } catch (\Throwable $exception) {
-            dd($exception);
             report($exception);
             return back()->with([
                 'createInvoice' => __('Could not create invoice at this moment.')
