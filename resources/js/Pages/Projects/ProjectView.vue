@@ -1,24 +1,32 @@
 <template>
     <app-layout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                View Project {{project.name}}
-            </h2>
+            <div class="flex justify-between">
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                    {{project.name}}
+                </h2>
+
+                <div>
+                    <jet-secondary-button class="ml-2" @click="syncProject" :class="{ 'opacity-25': syncProjectForm.processing }"
+                                :disabled="syncProjectForm.processing">
+                        Sync Issues
+                    </jet-secondary-button>
+
+                    <jet-button class="ml-2" @click="createInvoice" :class="{ 'opacity-25': createInvoiceForm.processing }"
+                                :disabled="createInvoiceForm.processing">
+                        Create Invoice
+                    </jet-button>
+                </div>
+            </div>
         </template>
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <issue-list :issues="project.issues" />
+                <issue-list :issues="issues" />
 
                 <invoice-list class="mt-10"
                               :invoices="project.invoices"
                 />
-
-                <button @click="createInvoice"
-                              class="cursor-pointer ml-6 text-sm text-red-500 focus:outline-none"
-                >
-                    Create an invoice
-                </button>
             </div>
         </div>
     </app-layout>
@@ -26,25 +34,33 @@
 
 <script>
     import AppLayout from '@/Layouts/AppLayout'
-    import IssueList from '@/Pages/Projects/IssueList'
-    import InvoiceList from '@/Pages/Projects/InvoiceList'
+    import IssueList from './IssueList'
+    import InvoiceList from './InvoiceList'
+    import JetButton from '@/Jetstream/Button'
+    import JetSecondaryButton from '@/Jetstream/SecondaryButton'
 
     export default {
         props: [
-            'project'
+            'project',
+            'issues'
         ],
 
         data() {
             // noinspection JSUnresolvedFunction
             return {
                 createInvoiceForm: this.$inertia.form({}),
+                syncProjectForm: this.$inertia.form({
+                    jira_key: this.project.jira_key
+                }),
             }
         },
 
         components: {
             AppLayout,
             IssueList,
-            InvoiceList
+            InvoiceList,
+            JetButton,
+            JetSecondaryButton
         },
 
         methods: {
@@ -53,6 +69,14 @@
                     errorBag: 'createInvoice',
                     preserveScroll: true,
                     onSuccess: () => this.createInvoiceForm.reset(),
+                });
+            },
+
+            syncProject() {
+                this.syncProjectForm.post(route('projects.sync.jira'), {
+                    errorBag: 'syncJiraProject',
+                    preserveScroll: true,
+                    onSuccess: () => this.syncJiraProjectForm.reset(),
                 });
             }
         }

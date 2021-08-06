@@ -19,5 +19,9 @@
     </head>
     <body class="font-sans antialiased">
         @inertia
+
+        @env ('local')
+            <script src="http://cody.chillbits.com:3002/browser-sync/browser-sync-client.js"></script>
+        @endenv
     </body>
 </html>
