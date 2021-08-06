@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Project;
+use App\Models\Issue;
 use App\Projects\InteractsWithProjectModel;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -15,8 +15,11 @@ class ViewProjectController extends Controller
     {
         return Inertia::render('Projects/ProjectView', [
             'project' => $this->findProjectOrFail($projectId)
-                              ->load('issues')
-                              ->load('invoices')
+                              ->load('invoices'),
+
+            'issues' => Issue::query()
+                             ->where('project_id', $projectId)
+                             ->paginate(10)
         ]);
     }
 }

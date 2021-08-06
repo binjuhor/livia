@@ -73,11 +73,7 @@
 
         methods: {
             syncJiraProject() {
-                this.syncJiraProjectForm.post(route('projects.sync.jira'), {
-                    errorBag: 'syncJiraProject',
-                    preserveScroll: true,
-                    onSuccess: () => this.syncJiraProjectForm.reset(),
-                });
+
             }
         },
     }
