@@ -31,11 +31,11 @@
 
                 <template #actions>
                     <jet-action-message :on="syncJiraProjectForm.recentlySuccessful" class="mr-3">
-                        Sync successfully.
+                        Imported successfully.
                     </jet-action-message>
 
                     <jet-button :class="{ 'opacity-25': syncJiraProjectForm.processing }" :disabled="syncJiraProjectForm.processing">
-                        Sync
+                        Import
                     </jet-button>
                 </template>
             </jet-form-section>
