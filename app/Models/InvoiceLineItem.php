@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string      jira_key
  * @property int         invoice_id
  * @property string|null xero_id
+ * @property int $issue_id
  */
 class InvoiceLineItem extends Model
 {

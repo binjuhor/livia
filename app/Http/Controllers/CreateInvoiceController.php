@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Invoices\InteractsWithInvoiceModel;
 use App\Jobs\UpsertInvoice;
-use App\Jobs\CreateXeroInvoice;
-use App\Jobs\UpdateXeroInvoice;
 use App\Projects\InteractsWithProjectModel;
 use Illuminate\Http\RedirectResponse;
 

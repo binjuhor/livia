@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int        id
  * @property string     xero_id
  * @property Project    project
+ * @property string     $pdf_file
  */
 class Invoice extends Model
 {
@@ -29,7 +30,8 @@ class Invoice extends Model
         'reference',
         'total',
         'status',
-        'xero_id'
+        'xero_id',
+        'pdf_file'
     ];
 
     public function project(): BelongsTo
