@@ -49,6 +49,7 @@ trait InteractsWithPdfInvoice
             ->filename($invoice->reference)
             ->addItems($lineItems->all())
             ->notes($notes)
+            ->logo(public_path('logo.png'))
             ->save('public');
     }
 

@@ -122,9 +122,6 @@
             .border-0 {
                 border: none !important;
             }
-            .cool-gray {
-                color: #6B7280;
-            }
         </style>
     </head>
 
@@ -273,10 +270,8 @@
                 @foreach($invoice->items as $item)
                 <tr>
                     <td class="pl-0">
-                        {{ $item->title }}
-
                         @if($item->description)
-                            <p class="cool-gray">{{ $item->description }}</p>
+                            {{ $item->description }}
                         @endif
                     </td>
                     @if($invoice->hasItemUnits)
