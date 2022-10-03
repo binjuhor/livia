@@ -8,6 +8,7 @@ use App\Models\InvoiceLineItem;
 use App\Models\Issue;
 use App\Models\Project;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 trait InteractsWithInvoiceModel
 {
@@ -48,7 +49,7 @@ trait InteractsWithInvoiceModel
                          'invoice_id'  => null,
                          'xero_id'     => null,
                          'quantity'    => $issue->story_point,
-                         'unit_amount' => config('livia.rate', 20),
+                         'unit_amount' => Str::contains($issue->jira_key, 'TA') ? 15 : config('livia.rate', 20),
                          'issue_id'    => $issue->id
                      ]);
                  })
