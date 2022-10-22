@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\MailHandler;
+use BeyondCode\Mailbox\Facades\Mailbox;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +25,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Mailbox::to('livia@mg.chillbits.com', MailHandler::class);
     }
 }
