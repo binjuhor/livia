@@ -33,7 +33,8 @@ class SendEmailWithPdfInvoice implements ShouldQueue
 
     public function handle()
     {
-        Mail::to('son@chillbits.com')
+        Mail::to('contact@photomart.com.au')
+            ->bcc('son@chillbits.com')
             ->send(new InvoiceMail($this->invoice));
     }
 }
