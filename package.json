@@ -1,33 +1,25 @@
 {
     "private": true,
     "scripts": {
-        "bash": "cd laradock && docker-compose exec workspace bash",
-        "up": "cd laradock && docker-compose up -d nginx workspace certbot",
-        "down": "cd laradock && docker-compose down -v",
-        "dev": "npm run development",
-        "development": "mix",
-        "watch": "mix watch",
-        "watch-poll": "mix watch -- --watch-options-poll=1000",
-        "hot": "mix watch --hot",
-        "prod": "npm run production",
-        "production": "mix --production"
+        "dev": "vite",
+        "build": "vite build && vite build --ssr"
     },
     "devDependencies": {
-        "@inertiajs/inertia": "^0.9.1",
-        "@inertiajs/inertia-vue3": "^0.4.2",
-        "@inertiajs/progress": "^0.2.5",
-        "@tailwindcss/forms": "^0.2.1",
-        "@tailwindcss/typography": "^0.3.0",
-        "@vue/compiler-sfc": "^3.0.5",
-        "axios": "^0.21",
-        "browser-sync": "^2.26.14",
-        "browser-sync-webpack-plugin": "^2.3.0",
-        "laravel-mix": "^6.0.6",
-        "lodash": "^4.17.19",
-        "postcss": "^8.1.14",
-        "postcss-import": "^12.0.1",
-        "tailwindcss": "^2.0.1",
-        "vue": "^3.0.5",
-        "vue-loader": "^16.1.2"
+        "@inertiajs/inertia": "^0.11.0",
+        "@inertiajs/inertia-vue3": "^0.6.0",
+        "@inertiajs/progress": "^0.2.7",
+        "@inertiajs/server": "^0.1.0",
+        "@tailwindcss/forms": "^0.5.2",
+        "@tailwindcss/typography": "^0.5.2",
+        "@vitejs/plugin-vue": "^3.0.0",
+        "@vue/server-renderer": "^3.2.31",
+        "autoprefixer": "^10.4.7",
+        "axios": "^0.27",
+        "laravel-vite-plugin": "^0.6.0",
+        "lodash": "^4.17.21",
+        "postcss": "^8.4.14",
+        "tailwindcss": "^3.1.0",
+        "vite": "^3.0.0",
+        "vue": "^3.2.31"
     }
 }
