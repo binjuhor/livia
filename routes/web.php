@@ -3,6 +3,10 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Models\Project;
+use App\Http\Controllers\SyncJiraController;
+use App\Http\Controllers\CreateInvoiceController;
+use App\Models\Issue;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +34,23 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
+        return Inertia::render('Dashboard', [
+            'projects' => Project::all()
+        ]);
     })->name('dashboard');
+
+    Route::get('/projects/{id}', function ($id) {
+        return Inertia::render('Project', [
+            'project' => Project::query()->find($id)->load('invoices'),
+            'issues' => Issue::query()
+                ->where('project_id', $id)
+                ->paginate(10)
+        ]);
+    })->name('projects.view');
+
+    Route::post('/projects/syncJira', SyncJiraController::class)
+        ->name('projects.syncJira');
+
+    Route::post('/projects/{id}/createInvoice', CreateInvoiceController::class)
+        ->name('projects.createInvoice');
 });
