@@ -28,6 +28,11 @@ Route::get('/', function () {
     ]);
 });
 
+Route::post('/mailgun', function(\Illuminate\Http\Request $request) {
+    info($request->toArray());
+});
+
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),

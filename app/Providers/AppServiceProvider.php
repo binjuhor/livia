@@ -25,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Mailbox::catchAll(MailHandler::class);
         Mailbox::to('livia@mg.chillbits.com', MailHandler::class);
     }
 }
