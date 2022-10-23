@@ -31,7 +31,7 @@ class TestMail extends Mailable
     public function envelope()
     {
         return new Envelope(
-            subject: 'Test Mail',
+            subject: 'Here is reply with invoice',
         );
     }
 
