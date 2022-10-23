@@ -3,7 +3,6 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -13,14 +12,16 @@ class TestMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $message = "Default message";
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($message)
     {
-        //
+        $this->message = $message;
     }
 
     /**
@@ -31,7 +32,7 @@ class TestMail extends Mailable
     public function envelope()
     {
         return new Envelope(
-            subject: 'Here is reply with invoice',
+            subject: 'Response from Livia: ' . $this->message,
         );
     }
 
@@ -44,6 +45,9 @@ class TestMail extends Mailable
     {
         return new Content(
             markdown: 'emails.tests.testmail',
+            with: [
+                'message' => $this->message
+            ]
         );
     }
 
