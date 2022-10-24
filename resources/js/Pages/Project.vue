@@ -18,7 +18,7 @@ const syncProjectForm = useForm({
 })
 
 const createInvoice = () => {
-  createInvoiceForm.post(route('projects.createInvoice', props.project), {
+  createInvoiceForm.post(route('projects.createInvoice', props.project.id), {
     errorBag: 'createInvoice',
     preserveScroll: true,
     onSuccess: () => createInvoiceForm.reset(),

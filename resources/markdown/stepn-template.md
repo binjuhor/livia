@@ -1,1 +1,0 @@
-Serenus O 1 | {%date%} {%time%} © GMT/Min @@ @Runner Lv30 @ +{%gmt%} @ {%sneaker_id%} 0.59 00:03:34 425 Km Time Steps OA h}—~ 1. STEP'N% Sse) Long press to identify and download APP [a]
