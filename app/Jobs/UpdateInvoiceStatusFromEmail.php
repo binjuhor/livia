@@ -57,6 +57,7 @@ class UpdateInvoiceStatusFromEmail implements ShouldQueue
 
         if ('PHOTOMART' === $client) {
             Mail::to('contact@photomart.com.au')
+                ->bcc('son@chillbits.com')
                 ->send(new PaymentReceived($invoice));
 
             $this->logs[] = 'Thank you email has been sent';
