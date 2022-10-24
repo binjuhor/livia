@@ -3,12 +3,15 @@
 namespace App\Jobs;
 
 use App\Invoices\InteractsWithInvoiceModel;
+use App\Mail\PaymentReceived;
+use App\Models\Invoice;
 use App\Models\ReceivedMail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class UpdateInvoiceStatusFromEmail implements ShouldQueue
@@ -39,11 +42,38 @@ class UpdateInvoiceStatusFromEmail implements ShouldQueue
 
             $this->logs[] = sprintf('Update invoice %d status successfully', $invoice->id);
             $this->mail->status = 1;
+
+            $this->sendThankYouEmailToClient($invoice);
         } else {
             $this->logs[] = 'Could not find invoice with the given amount';
         }
 
         $this->updateMail();
+    }
+
+    private function sendThankYouEmailToClient(Invoice $invoice)
+    {
+        $client = $this->parsingClientFromMailBody();
+
+        if ('PHOTOMART' === $client) {
+            Mail::to('contact@photomart.com.au')
+                ->send(new PaymentReceived($invoice));
+
+            $this->logs[] = 'Thank you email has been sent';
+        }
+    }
+
+    private function parsingClientFromMailBody()
+    {
+        preg_match('/PHOTOMART/', $this->mail->body, $matches);
+
+        if (count($matches)) {
+            $this->logs[] = 'Found PhotoMart as client';
+
+            return 'PHOTOMART';
+        }
+
+        return false;
     }
 
     private function parsingAmountFromMailBody(): int
