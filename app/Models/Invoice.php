@@ -9,13 +9,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @property string     reference
- * @property float      total
+ * @property string reference
+ * @property float total
  * @property Collection lineItems
- * @property int        id
- * @property string     xero_id
- * @property Project    project
- * @property string     $pdf_file
+ * @property int id
+ * @property string xero_id
+ * @property Project project
+ * @property string $pdf_file
+ * @property int $status
  */
 class Invoice extends Model
 {

@@ -8,24 +8,14 @@ use BeyondCode\Mailbox\Facades\Mailbox;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
+    public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot()
+    /** @noinspection PhpUndefinedMethodInspection */
+    public function boot(): void
     {
         Mailbox::catchAll(MailHandler::class);
-        //Mailbox::to('livia@mg.chillbits.com', MailHandler::class);
     }
 }

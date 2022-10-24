@@ -90,4 +90,13 @@ trait InteractsWithInvoiceModel
                               ->where('description', 'LIKE', "%{$jiraKey}%")
                               ->first();
     }
+
+    /** @noinspection PhpIncompatibleReturnTypeInspection */
+    public function findRecentInvoiceByAmount(int $amount): ?Invoice
+    {
+        return Invoice::query()
+            ->where('total', $amount)
+            ->where('created_at', '>=', now()->subDays(7))
+            ->first();
+    }
 }
