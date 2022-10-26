@@ -73,7 +73,7 @@ class GoogleSheetApiCommand extends Command
     public function getGoogleClient()
     {
         $client = new \Google_Client();
-        $client->setRedirectUri('https://keisha.chillbits.com/auth/callback');
+        $client->setRedirectUri('http://livia.chillbits.com/auth/callback');
         $client->setApplicationName('Anna White');
         $client->setScopes(\Google_Service_Sheets::SPREADSHEETS);
         $client->setAuthConfig(config_path('credentials.json'));

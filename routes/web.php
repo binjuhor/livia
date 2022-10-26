@@ -7,6 +7,7 @@ use App\Models\Project;
 use App\Http\Controllers\SyncJiraController;
 use App\Http\Controllers\CreateInvoiceController;
 use App\Models\Issue;
+use Laravel\Socialite\Facades\Socialite;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +31,11 @@ Route::get('/', function () {
 
 Route::post('/mailgun', function(\Illuminate\Http\Request $request) {
     info($request->toArray());
+});
+
+Route::get('/auth/callback', function () {
+    $user = Socialite::driver('google')->user();
+    dd($user);
 });
 
 
