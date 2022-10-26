@@ -29,35 +29,24 @@ class GoogleSheetApiCommand extends Command
      */
     public function handle()
     {
-        Log::debug('start update sheet 1 data');
         $client = $this->getGoogleClient();
-        $service = new Google_Service_Sheets($client);
-        $spreadsheetId = env('GOOGLE_SHEET_ID');
-        $range = 'Sheet1!A2:D';
+        $service = new \Google_Service_Sheets($client);
+        $spreadsheetId = env('GOOGLE_SHEET_ID', '1fskmWCPY-ZAiVCl3t1vewF6oymqrWibmNTtn77l4glw');
+        $range = 'Details!F2:H12';
 
         // get values
         $response = $service->spreadsheets_values->get($spreadsheetId, $range);
         $values = $response->getValues();
 
-        print_r($values);
+        $values[1][1] = 0; // BNB
+        $values[2][1] = 0; // ACH
+        $values[3][1] = 0; // AXS
+        $values[4][1] = 0; // BTC
+        $values[6][1] = 0; // SOL
+        $values[10][1] = 0; // GMT
 
-        // add/edit values
-        $data = [
-            [
-                'column A2',
-                'column B2',
-                'column C2',
-                'column D2',
-            ],
-            [
-                'column A3',
-                'column B3',
-                'column C3',
-                'column D3',
-            ],
-        ];
         $requestBody = new \Google_Service_Sheets_ValueRange([
-            'values' => $data
+            'values' => $values
         ]);
 
         $params = [
@@ -66,14 +55,13 @@ class GoogleSheetApiCommand extends Command
 
         $service->spreadsheets_values->update($spreadsheetId, $range, $requestBody, $params);
         echo "SUCCESS \n";
-        Log::debug('update sheet 1 data success');
         return Command::SUCCESS;
     }
 
     public function getGoogleClient()
     {
         $client = new \Google_Client();
-        $client->setRedirectUri('http://livia.chillbits.com/auth/callback');
+        $client->setRedirectUri('http://livia.5oaqkapv5e-e9249vmxw3kr.p.temp-site.link/auth/callback');
         $client->setApplicationName('Anna White');
         $client->setScopes(\Google_Service_Sheets::SPREADSHEETS);
         $client->setAuthConfig(config_path('credentials.json'));
