@@ -32,6 +32,10 @@ return [
 
     'keisha' => [
         'key' => env('KEISHA_API_KEY')
+    ],
+
+    'google' => [
+        'sheet_id' => env('GOOGLE_SHEET_ID')
     ]
 
 ];

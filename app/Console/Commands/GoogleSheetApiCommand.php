@@ -37,19 +37,21 @@ class GoogleSheetApiCommand extends Command
         if (count($pricing)) {
             $client = $this->getGoogleClient();
             $service = new \Google_Service_Sheets($client);
-            $spreadsheetId = env('GOOGLE_SHEET_ID', '1fskmWCPY-ZAiVCl3t1vewF6oymqrWibmNTtn77l4glw');
+            $spreadsheetId = config('services.google.sheet_id');
             $range = 'Details!F2:H12';
 
             // get values
             $response = $service->spreadsheets_values->get($spreadsheetId, $range);
             $values = $response->getValues();
 
-            $values[1][1] = $pricing['BNB']; // BNB
-            $values[2][1] = $pricing['ACH']; // ACH
-            $values[3][1] = $pricing['AXS']; // AXS
-            $values[4][1] = $pricing['BTC']; // BTC
-            $values[6][1] = $pricing['SOL']; // SOL
-            $values[10][1] = $pricing['GMT']; // GMT
+            $values[1][1] = $pricing['BNB'];
+            $values[2][1] = $pricing['ACH'];
+            $values[3][1] = $pricing['AXS'];
+            $values[4][1] = $pricing['BTC'];
+            $values[5][0] = $pricing['BUSD'];
+            $values[5][2] = $pricing['AUD'];
+            $values[6][1] = $pricing['SOL'];
+            $values[10][1] = $pricing['GMT'];
 
             $requestBody = new \Google_Service_Sheets_ValueRange([
                 'values' => $values
