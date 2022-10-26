@@ -29,17 +29,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->job(
-            (new SyncJiraIssuesForProject(
-                $this->findProjectByKey('PM')
-            ))
-        )->daily()->emailOutputTo('son@chillbits.com');
-
-        $schedule->job(
-            (new UpsertInvoice(
-                $this->findProjectByKey('PM')
-            ))
-        )->daily()->emailOutputTo('son@chillbits.com');
+        $schedule->command('sheet')->hourly();
     }
 
     /**
