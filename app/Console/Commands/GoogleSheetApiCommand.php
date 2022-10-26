@@ -2,9 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Services\KeishaService;
 use Exception;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 
 class GoogleSheetApiCommand extends Command
 {
@@ -26,36 +27,44 @@ class GoogleSheetApiCommand extends Command
      * Execute the console command.
      *
      * @return int
+     * @throws GuzzleException
      */
-    public function handle()
+    public function handle(): int
     {
-        $client = $this->getGoogleClient();
-        $service = new \Google_Service_Sheets($client);
-        $spreadsheetId = env('GOOGLE_SHEET_ID', '1fskmWCPY-ZAiVCl3t1vewF6oymqrWibmNTtn77l4glw');
-        $range = 'Details!F2:H12';
+        $keisha = new KeishaService();
+        $pricing = $keisha->getPricing()->toArray();
 
-        // get values
-        $response = $service->spreadsheets_values->get($spreadsheetId, $range);
-        $values = $response->getValues();
+        if (count($pricing)) {
+            $client = $this->getGoogleClient();
+            $service = new \Google_Service_Sheets($client);
+            $spreadsheetId = env('GOOGLE_SHEET_ID', '1fskmWCPY-ZAiVCl3t1vewF6oymqrWibmNTtn77l4glw');
+            $range = 'Details!F2:H12';
 
-        $values[1][1] = 0; // BNB
-        $values[2][1] = 0; // ACH
-        $values[3][1] = 0; // AXS
-        $values[4][1] = 0; // BTC
-        $values[6][1] = 0; // SOL
-        $values[10][1] = 0; // GMT
+            // get values
+            $response = $service->spreadsheets_values->get($spreadsheetId, $range);
+            $values = $response->getValues();
 
-        $requestBody = new \Google_Service_Sheets_ValueRange([
-            'values' => $values
-        ]);
+            $values[1][1] = $pricing['BNB']; // BNB
+            $values[2][1] = $pricing['ACH']; // ACH
+            $values[3][1] = $pricing['AXS']; // AXS
+            $values[4][1] = $pricing['BTC']; // BTC
+            $values[6][1] = $pricing['SOL']; // SOL
+            $values[10][1] = $pricing['GMT']; // GMT
 
-        $params = [
-            'valueInputOption' => 'RAW'
-        ];
+            $requestBody = new \Google_Service_Sheets_ValueRange([
+                'values' => $values
+            ]);
 
-        $service->spreadsheets_values->update($spreadsheetId, $range, $requestBody, $params);
-        echo "SUCCESS \n";
-        return Command::SUCCESS;
+            $params = [
+                'valueInputOption' => 'RAW'
+            ];
+
+            $service->spreadsheets_values->update($spreadsheetId, $range, $requestBody, $params);
+            echo "SUCCESS \n";
+            return Command::SUCCESS;
+        }
+
+        return Command::FAILURE;
     }
 
     public function getGoogleClient()
