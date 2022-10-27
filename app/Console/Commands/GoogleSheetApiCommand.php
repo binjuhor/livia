@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Services\KeishaService;
+use App\Services\SamirService;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Console\Command;
@@ -30,6 +31,53 @@ class GoogleSheetApiCommand extends Command
      * @throws GuzzleException
      */
     public function handle(): int
+    {
+        //$this->updatePricing();
+        $this->updateBalancing();
+
+        return Command::FAILURE;
+    }
+
+    private function updateBalancing()
+    {
+        $samir = new SamirService();
+        $balances = $samir->getBalances()
+            ->keyBy('symbol')
+            ->map(function ($balance) {
+                return $balance['amount'];
+            })->toArray();
+
+        if (count($balances)) {
+            $client = $this->getGoogleClient();
+            $service = new \Google_Service_Sheets($client);
+            $spreadsheetId = config('services.google.sheet_id');
+            $range = 'Details!A2:A13';
+
+            // get values
+            $response = $service->spreadsheets_values->get($spreadsheetId, $range, ['valueRenderOption' => 'UNFORMATTED_VALUE']);
+            $values = $response->getValues();
+
+            $values[1][0] = $balances['BNB'];
+            $values[2][0] = $balances['ACH'];
+            $values[3][0] = $balances['AXS'];
+            $values[4][0] = $balances['BTC'];
+            $values[6][0] = $balances['SOL'];
+
+            $requestBody = new \Google_Service_Sheets_ValueRange([
+                'values' => $values
+            ]);
+
+            $params = [
+                'valueInputOption' => 'RAW'
+            ];
+
+            $service->spreadsheets_values->update($spreadsheetId, $range, $requestBody, $params);
+            echo "SUCCESS \n";
+            return Command::SUCCESS;
+        }
+    }
+
+    private function updatePricing()
     {
         $keisha = new KeishaService();
         $pricing = $keisha->getPricing()->toArray();
@@ -65,8 +113,6 @@ class GoogleSheetApiCommand extends Command
             echo "SUCCESS \n";
             return Command::SUCCESS;
         }
-
-        return Command::FAILURE;
     }
 
     public function getGoogleClient()

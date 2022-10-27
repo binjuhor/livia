@@ -36,6 +36,10 @@ return [
 
     'google' => [
         'sheet_id' => env('GOOGLE_SHEET_ID')
+    ],
+
+    'samir' => [
+        'key' => env('SAMIR_API_KEY')
     ]
 
 ];
