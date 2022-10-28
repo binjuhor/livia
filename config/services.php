@@ -35,7 +35,8 @@ return [
     ],
 
     'google' => [
-        'sheet_id' => env('GOOGLE_SHEET_ID')
+        'sheet_id_capital' => env('GOOGLE_SHEET_ID_CAPITAL'),
+        'sheet_id_stepn' => env('GOOGLE_SHEET_ID_STEPN')
     ],
 
     'samir' => [

@@ -8,21 +8,21 @@ use Exception;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Console\Command;
 
-class GoogleSheetApiCommand extends Command
+class SheetStepnCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'sheet';
+    protected $signature = 'sheet:stepn';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Interacts with Capital Google Sheet';
+    protected $description = 'Interacts with STEPN Google Sheet';
 
     /**
      * Execute the console command.
@@ -32,70 +32,29 @@ class GoogleSheetApiCommand extends Command
     public function handle()
     {
         $this->updatePricing();
-        $this->updateBalancing();
-    }
-
-    private function updateBalancing()
-    {
-        $samir = new SamirService();
-        $balances = $samir->getBalances()
-            ->keyBy('symbol')
-            ->map(function ($balance) {
-                return $balance['amount'];
-            })->toArray();
-
-        if (count($balances)) {
-            $client = $this->getGoogleClient();
-            $service = new \Google_Service_Sheets($client);
-            $spreadsheetId = config('services.google.sheet_id_capital');
-            $range = 'Details!A2:A13';
-
-            // get values
-            $response = $service->spreadsheets_values->get($spreadsheetId, $range, ['valueRenderOption' => 'UNFORMATTED_VALUE']);
-            $values = $response->getValues();
-
-            $values[1][0] = $balances['BNB'];
-            $values[2][0] = $balances['ACH'];
-            $values[3][0] = $balances['AXS'];
-            $values[4][0] = $balances['BTC'];
-            $values[6][0] = $balances['SOL'];
-
-            $requestBody = new \Google_Service_Sheets_ValueRange([
-                'values' => $values
-            ]);
-
-            $params = [
-                'valueInputOption' => 'RAW'
-            ];
-
-            $service->spreadsheets_values->update($spreadsheetId, $range, $requestBody, $params);
-            echo "SUCCESS \n";
-        }
     }
 
     private function updatePricing()
     {
         $keisha = new KeishaService();
-        $pricing = $keisha->getPricing()->toArray();
+        $pricing = $keisha->getStepnPricing()->toArray();
 
         if (count($pricing)) {
             $client = $this->getGoogleClient();
             $service = new \Google_Service_Sheets($client);
-            $spreadsheetId = config('services.google.sheet_id_capital');
-            $range = 'Details!F2:H12';
+            $spreadsheetId = config('services.google.sheet_id_stepn');
+            $range = 'Pricing!B3:C8';
 
             // get values
             $response = $service->spreadsheets_values->get($spreadsheetId, $range, ['valueRenderOption' => 'UNFORMATTED_VALUE']);
             $values = $response->getValues();
 
-            $values[1][1] = $pricing['BNB'];
-            $values[2][1] = $pricing['ACH'];
-            $values[3][1] = $pricing['AXS'];
-            $values[4][1] = $pricing['BTC'];
-            $values[5][0] = $pricing['BUSD'];
-            $values[5][2] = $pricing['AUD'];
-            $values[6][1] = $pricing['SOL'];
-            $values[10][1] = $pricing['GMT'];
+            $values[0][0] = $pricing['SOL'];
+            $values[1][0] = $pricing['GST'];
+            $values[2][0] = $pricing['GMT'];
+            $values[3][1] = $pricing['COMFORT1'];
+            $values[4][1] = $pricing['COMFORT2'];
+            $values[5][1] = $pricing['COMFORT3'];
 
             $requestBody = new \Google_Service_Sheets_ValueRange([
                 'values' => $values

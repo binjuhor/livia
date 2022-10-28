@@ -30,6 +30,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('sheet')->hourly();
+        $schedule->command('sheet:stepn')->hourly();
     }
 
     /**

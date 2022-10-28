@@ -82,4 +82,13 @@ class KeishaService
         $response = $this->sendRequest('GET', '/api/pricing');
         return collect(json_decode((string)$response->getBody(), true));
     }
+
+    /**
+     * @throws GuzzleException
+     */
+    public function getStepnPricing(): Collection
+    {
+        $response = $this->sendRequest('GET', '/api/stepn/pricing');
+        return collect(json_decode((string)$response->getBody(), true));
+    }
 }
